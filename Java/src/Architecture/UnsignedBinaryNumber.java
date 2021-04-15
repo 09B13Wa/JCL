@@ -1,5 +1,6 @@
 package Architecture;
 
+import java.nio.BufferOverflowException;
 import java.util.List;
 import java.util.Vector;
 
@@ -11,53 +12,142 @@ public class UnsignedBinaryNumber {
     private boolean Overflown;
 
     public UnsignedBinaryNumber(int entryValue) {
-        throw new UnsupportedOperationException();
+        entryValue = CheckIfPositive(entryValue);
+        BinaryRepresentation = toBinNumber(entryValue);
+        Length = BinaryRepresentation.size();
+        MinValue = 0;
+        MaxValue = MaxValueAbsoluteForLength(Length);
     }
 
     public UnsignedBinaryNumber(int entryValue, int length) {
-        throw new UnsupportedOperationException();
+        entryValue = CheckIfPositive(entryValue);
+        int actualLength = BinaryRepresentation.size();
+        if (actualLength <= length) {
+            BinaryRepresentation = toBinNumber(entryValue);
+            ExtendTo(length);
+            MinValue = 0;
+            MaxValue = MaxValueAbsoluteForLength(Length);
+            Length = length;
+        } else {
+            throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
+                    "Minimum is " + actualLength + " but got " + length);
+        }
     }
 
     public UnsignedBinaryNumber(String number) {
-        throw new UnsupportedOperationException();
+        char[] numberChars = number.toCharArray();
+        List<Integer> binaryRepresentation = new Vector<Integer>();
+        int computedLength = 0;
+        for (char digit : numberChars) {
+            if (digit == '0')
+                binaryRepresentation.add(0);
+            else if (digit == '1')
+                binaryRepresentation.add(1);
+            else
+                throw new IllegalArgumentException("Declaring an unsigned binary number from a string requires the" +
+                        "ti be made up of only 0s and 1s");
+            computedLength += 1;
+        }
+        BinaryRepresentation = binaryRepresentation;
+        Length = computedLength;
+        MaxValue = MaxValueAbsoluteForLength(computedLength);
+        MinValue = 0;
     }
 
     public UnsignedBinaryNumber(String number, int length) {
-        throw new UnsupportedOperationException();
+        char[] numberChars = number.toCharArray();
+        List<Integer> binaryRepresentation = new Vector<Integer>();
+        int computedLength = 0;
+        for (char digit : numberChars) {
+            if (digit == '0')
+                binaryRepresentation.add(0);
+            else if (digit == '1')
+                binaryRepresentation.add(1);
+            else
+                throw new IllegalArgumentException("Declaring an unsigned binary number from a string requires the" +
+                        "ti be made up of only 0s and 1s");
+            computedLength += 1;
+        }
+        if (computedLength <= length) {
+            BinaryRepresentation = binaryRepresentation;
+            ExtendTo(length);
+            MinValue = 0;
+            MaxValue = MaxValueAbsoluteForLength(Length);
+            Length = length;
+        } else {
+            throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
+                    "Minimum is " + computedLength + " but got " + length);
+        }
     }
 
     public UnsignedBinaryNumber(SignedBinaryNumber signedBinaryNumber){
-        throw new UnsupportedOperationException();
+        List<Integer> binaryRepresentation = signedBinaryNumber.getBinaryRepresentation();
+        int signBit = binaryRepresentation.get(0);
+        if (signBit == 0){
+            List<Integer> newRepresentation = new Vector<Integer>();
+            int currentLength = binaryRepresentation.size();
+            for (int i = 1; i < currentLength; i++)
+                newRepresentation.add(binaryRepresentation.get(i));
+            BinaryRepresentation = newRepresentation;
+            Length = currentLength - 1;
+            MinValue = 0;
+            MaxValue = MaxValueAbsoluteForLength(Length);
+        }
+        else
+            throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
     }
 
     public UnsignedBinaryNumber(SignedBinaryNumber signedBinaryNumber, int length){
-        throw new UnsupportedOperationException();
+        List<Integer> binaryRepresentation = signedBinaryNumber.getBinaryRepresentation();
+        int signBit = binaryRepresentation.get(0);
+        if (signBit == 0){
+            List<Integer> newRepresentation = new Vector<Integer>();
+            int currentLength = binaryRepresentation.size();
+            for (int i = 1; i < currentLength; i++)
+                newRepresentation.add(binaryRepresentation.get(i));
+            int actualLength = currentLength - 1;
+            if (actualLength <= length){
+                BinaryRepresentation = newRepresentation;
+                ExtendTo(length);
+                Length = actualLength;
+                MinValue = 0;
+                MaxValue = MaxValueAbsoluteForLength(Length);
+            } else {
+                throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
+                        "Minimum is " + actualLength + " but got " + length);
+            }
+
+        }
+        else
+            throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
     }
 
     public UnsignedBinaryNumber(BasedInt signedBinaryNumber){
-        throw new UnsupportedOperationException();
+
     }
 
     public UnsignedBinaryNumber(BasedInt signedBinaryNumber, int length){
         throw new UnsupportedOperationException();
     }
 
+    public int CheckIfPositive(int value){
+        if (value >= 0)
+            return value;
+        else
+            throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
+    }
+
     private List<Integer> toBinNumber(int integer){
-        int listSize = MaxValueAbsoluteForLength(integer);
+        int listSize = MinimumLengthForRepresentation(integer);
         int powerOfTwo = (int)Math.pow(2, listSize);
         List<Integer> newRepresentation = new Vector<Integer>();
-
         for (int i = 0; i < listSize; i++){
-            newRepresentation.add(0);
-        }
-
-        for (int index = listSize - 1; index > -1; index--){
             int valueToAdd = 0;
-            if (integer >= powerOfTwo){
+            if (integer >= powerOfTwo) {
                 valueToAdd = 1;
                 integer -= powerOfTwo;
             }
-            newRepresentation.add(index, valueToAdd);
+            newRepresentation.add(valueToAdd);
             powerOfTwo /= 2;
         }
 
@@ -203,6 +293,18 @@ public class UnsignedBinaryNumber {
 
     public int CurrentLength(){
         return Length;
+    }
+
+    public int RepresentationSize(){
+        return Length;
+    }
+
+    public int getMaxValue() {
+        return MaxValue;
+    }
+
+    public int getMinValue() {
+        return MinValue;
     }
 
     @Override
