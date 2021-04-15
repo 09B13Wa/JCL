@@ -1,2 +1,2 @@
 # JCL
-Jascha Common Library
+Jascha Common
