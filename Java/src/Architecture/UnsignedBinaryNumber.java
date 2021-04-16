@@ -21,13 +21,13 @@ public class UnsignedBinaryNumber {
 
     public UnsignedBinaryNumber(int entryValue, int length) {
         entryValue = CheckIfPositive(entryValue);
+        BinaryRepresentation = toBinNumber(entryValue);
         int actualLength = BinaryRepresentation.size();
         if (actualLength <= length) {
-            BinaryRepresentation = toBinNumber(entryValue);
+            Length = length;
             ExtendTo(length);
             MinValue = 0;
             MaxValue = MaxValueAbsoluteForLength(Length);
-            Length = length;
         } else {
             throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
                     "Minimum is " + actualLength + " but got " + length);
@@ -122,12 +122,35 @@ public class UnsignedBinaryNumber {
             throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
     }
 
-    public UnsignedBinaryNumber(BasedInt signedBinaryNumber){
-
+    public UnsignedBinaryNumber(BasedInt basedNumber){
+        if (basedNumber.getSign() == BaseSign.POSITIVE) {
+            int equivalentValue = basedNumber.getValue();
+            BinaryRepresentation = toBinNumber(equivalentValue);
+            Length = BinaryRepresentation.size();
+            MinValue = 0;
+            MaxValue = MaxValueAbsoluteForLength(Length);
+        } else {
+            throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
+        }
     }
 
-    public UnsignedBinaryNumber(BasedInt signedBinaryNumber, int length){
-        throw new UnsupportedOperationException();
+    public UnsignedBinaryNumber(BasedInt basedNumber, int length){
+        if (basedNumber.getSign() == BaseSign.POSITIVE) {
+            int equivalentValue = basedNumber.getValue();
+            BinaryRepresentation = toBinNumber(equivalentValue);
+            int actualLength = BinaryRepresentation.size();
+            if (actualLength <= length) {
+                ExtendTo(length);
+                MinValue = 0;
+                MaxValue = MaxValueAbsoluteForLength(Length);
+                Length = length;
+            } else {
+                throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
+                        "Minimum is " + actualLength + " but got " + length);
+            }
+        } else {
+            throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
+        }
     }
 
     public int CheckIfPositive(int value){
@@ -156,7 +179,15 @@ public class UnsignedBinaryNumber {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException();
+        String toPrint = "";
+        for (int digit: BinaryRepresentation){
+            if (digit == 0)
+                toPrint += "0";
+            else
+                toPrint += "1";
+        }
+
+        return toPrint;
     }
 
     public void Add(UnsignedBinaryNumber toAdd){
@@ -256,7 +287,13 @@ public class UnsignedBinaryNumber {
     }
 
     public static int MaxValueAbsoluteForLength(int length){
-        throw new UnsupportedOperationException();
+        int maxValue = 0;
+        int powerOfTwo = 1;
+        for (int i = 0; i < length; i++){
+            maxValue += powerOfTwo;
+            powerOfTwo *= 2;
+        }
+        return maxValue;
     }
 
     public boolean isOverflown() {
@@ -268,7 +305,16 @@ public class UnsignedBinaryNumber {
     }
 
     public int ToValue(){
-        throw new UnsupportedOperationException();
+        int value = 0;
+        int powerOfTwo = 1;
+        for (int index = Length - 1; index > -1; index--){
+            int digit = BinaryRepresentation.get(index);
+            if (digit == 1)
+                value += powerOfTwo;
+            powerOfTwo *= 2;
+        }
+
+        return value;
     }
 
     public BasedInt toBasedInt(Base base){
@@ -276,11 +322,19 @@ public class UnsignedBinaryNumber {
     }
 
     public void ExtendTo(int length){
-
+        int currentSize = Length;
+        ExtendBy(length - currentSize);
     }
 
     public void ExtendBy(int extendedLength){
-
+        List<Integer> newBinaryRepresentation = new Vector<Integer>();
+        for (int count = 0; count < extendedLength; count++){
+            newBinaryRepresentation.add(0);
+        }
+        for (int digit: BinaryRepresentation){
+            newBinaryRepresentation.add(digit);
+        }
+        BinaryRepresentation = newBinaryRepresentation;
     }
 
     public int Squeeze(){
