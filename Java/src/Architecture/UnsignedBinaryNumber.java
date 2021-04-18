@@ -1,5 +1,7 @@
 package Architecture;
 
+import com.sun.jdi.event.ExceptionEvent;
+
 import java.nio.BufferOverflowException;
 import java.util.List;
 import java.util.Vector;
@@ -10,6 +12,7 @@ public class UnsignedBinaryNumber {
     private int MaxValue;
     private int MinValue;
     private boolean Overflown;
+    private boolean UserDefinedLength;
 
     public UnsignedBinaryNumber(int entryValue) {
         entryValue = CheckIfPositive(entryValue);
@@ -17,6 +20,7 @@ public class UnsignedBinaryNumber {
         Length = BinaryRepresentation.size();
         MinValue = 0;
         MaxValue = MaxValueAbsoluteForLength(Length);
+        UserDefinedLength = false;
     }
 
     public UnsignedBinaryNumber(int entryValue, int length) {
@@ -28,6 +32,7 @@ public class UnsignedBinaryNumber {
             ExtendTo(length);
             MinValue = 0;
             MaxValue = MaxValueAbsoluteForLength(Length);
+            UserDefinedLength = true;
         } else {
             throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
                     "Minimum is " + actualLength + " but got " + length);
@@ -52,6 +57,7 @@ public class UnsignedBinaryNumber {
         Length = computedLength;
         MaxValue = MaxValueAbsoluteForLength(computedLength);
         MinValue = 0;
+        UserDefinedLength = false;
     }
 
     public UnsignedBinaryNumber(String number, int length) {
@@ -78,6 +84,15 @@ public class UnsignedBinaryNumber {
             throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
                     "Minimum is " + computedLength + " but got " + length);
         }
+        UserDefinedLength = true;
+    }
+
+    public UnsignedBinaryNumber(List<Integer> integers){
+        BinaryRepresentation = integers;
+        Length = integers.size();
+        MaxValue = MaxValueAbsoluteForLength(Length);
+        MinValue = 0;
+        UserDefinedLength = false;
     }
 
     public UnsignedBinaryNumber(SignedBinaryNumber signedBinaryNumber){
@@ -92,6 +107,7 @@ public class UnsignedBinaryNumber {
             Length = currentLength - 1;
             MinValue = 0;
             MaxValue = MaxValueAbsoluteForLength(Length);
+            UserDefinedLength = false;
         }
         else
             throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
@@ -112,11 +128,11 @@ public class UnsignedBinaryNumber {
                 Length = actualLength;
                 MinValue = 0;
                 MaxValue = MaxValueAbsoluteForLength(Length);
+                UserDefinedLength = true;
             } else {
                 throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
                         "Minimum is " + actualLength + " but got " + length);
             }
-
         }
         else
             throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
@@ -129,6 +145,7 @@ public class UnsignedBinaryNumber {
             Length = BinaryRepresentation.size();
             MinValue = 0;
             MaxValue = MaxValueAbsoluteForLength(Length);
+            UserDefinedLength = true;
         } else {
             throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
         }
@@ -144,6 +161,7 @@ public class UnsignedBinaryNumber {
                 MinValue = 0;
                 MaxValue = MaxValueAbsoluteForLength(Length);
                 Length = length;
+                UserDefinedLength = false;
             } else {
                 throw new IllegalArgumentException("Error: the desired length is too small to represent this number." +
                         "Minimum is " + actualLength + " but got " + length);
@@ -191,19 +209,104 @@ public class UnsignedBinaryNumber {
     }
 
     public void Add(UnsignedBinaryNumber toAdd){
-        throw new UnsupportedOperationException();
+        UnsignedBinaryNumber resultingBinaryNumber = Add(this, toAdd);
+        List<Integer> result = resultingBinaryNumber.getBinaryRepresentation();
+        int totalResultLength = result.size();
+        if (UserDefinedLength) {
+            if (!Overflown && totalResultLength > Length)
+                throw new BufferOverflowException();
+            else {
+                BinaryRepresentation = result;
+                ShortenTo(Length);
+            }
+        }
+        else {
+            BinaryRepresentation = result;
+            Length = totalResultLength;
+            MaxValue = MaxValueAbsoluteForLength(Length);
+        }
     }
 
     public static UnsignedBinaryNumber Add(UnsignedBinaryNumber firstElement, UnsignedBinaryNumber secondElement){
-        throw new UnsupportedOperationException();
+        List<Integer> toAddAfter = new Vector<Integer>();
+        int numberOfNumberLength = secondElement.CurrentLength();
+        int numberOfNumbersCurrent = firstElement.CurrentLength();
+        int maximumNumberOfNumbers = numberOfNumberLength;
+        int minimumNumberOfNumbers = numberOfNumbersCurrent;
+        if (numberOfNumbersCurrent > numberOfNumberLength) {
+            maximumNumberOfNumbers = numberOfNumbersCurrent;
+            minimumNumberOfNumbers = numberOfNumberLength;
+        }
+        List<Integer> otherRepresentation = secondElement.getBinaryRepresentation();
+        List<Integer> firstRepresentation = firstElement.getBinaryRepresentation();
+        for (int i = 0; i < maximumNumberOfNumbers + 1; i++){
+            toAddAfter.add(0);
+        }
+
+        List<Integer> result = new Vector<Integer>();
+        for (int i = 0; i < minimumNumberOfNumbers; i++){
+            int sum = otherRepresentation.get(i) + firstRepresentation.get(i) + toAddAfter.get(i);
+            int directResult = 0;
+            int toAddOn = 0;
+            switch (sum) {
+                case 0:
+                    break;
+                case 1:
+                    directResult = 1;
+                    break;
+                case 2:
+                    toAddOn = 1;
+                    break;
+                case 3:
+                    directResult = 1;
+                    toAddOn = 1;
+                    break;
+                default:
+                    throw new ArithmeticException("Error: addition of sub-parts too great");
+            }
+            result.add(i, directResult);
+            toAddAfter.add(i + 1, toAddOn);
+        }
+
+        for (int i = minimumNumberOfNumbers; i < maximumNumberOfNumbers; i++){
+            int sum = otherRepresentation.get(i) + firstRepresentation.get(i) + toAddAfter.get(i);
+            int directResult = 0;
+            int toAddOn = 0;
+            switch (sum) {
+                case 0:
+                    break;
+                case 1:
+                    directResult = 1;
+                    break;
+                case 2:
+                    toAddOn = 1;
+                    break;
+                default:
+                    throw new ArithmeticException("Error: addition of sub-parts too great");
+            }
+            result.add(i, directResult);
+            toAddAfter.add(i + 1, toAddOn);
+        }
+        int totalResultLength = maximumNumberOfNumbers;
+        if (toAddAfter.get(maximumNumberOfNumbers + 1) == 1) {
+            result.add(maximumNumberOfNumbers + 1, toAddAfter.get(maximumNumberOfNumbers + 1));
+            totalResultLength += 1;
+        }
+
+        return new UnsignedBinaryNumber(result);
     }
 
-    public void Substract(UnsignedBinaryNumber toSubstract){
-        throw new UnsupportedOperationException();
+    public void Subtract(UnsignedBinaryNumber toSubtract){
+        UnsignedBinaryNumber subtractionResult = Subtract(this, toSubtract);
+        this.BinaryRepresentation = subtractionResult.getBinaryRepresentation();
     }
 
-    public static UnsignedBinaryNumber Substract(UnsignedBinaryNumber firstElement, UnsignedBinaryNumber secondElement){
-        throw new UnsupportedOperationException();
+    public static UnsignedBinaryNumber Subtract(UnsignedBinaryNumber firstElement, UnsignedBinaryNumber secondElement){
+        UnsignedBinaryNumber secondElementComplement = ToTwosComplement(secondElement);
+        UnsignedBinaryNumber result = Add(firstElement, secondElementComplement);
+        result.ShortenBy(1);
+        result.Squeeze();
+        return result;
     }
 
     public void Multiply(UnsignedBinaryNumber toMultiply){
@@ -222,28 +325,63 @@ public class UnsignedBinaryNumber {
         throw new UnsupportedOperationException();
     }
 
-    public UnsignedBinaryNumber ToOnesComplement(){
-        throw new UnsupportedOperationException();
+    public void ToOnesComplement(){
+        UnsignedBinaryNumber result = ToOnesComplement(this);
+        BinaryRepresentation = result.getBinaryRepresentation();
     }
 
-    public UnsignedBinaryNumber ToTwosComplement(){
-        throw new UnsupportedOperationException();
+    public static UnsignedBinaryNumber ToOnesComplement(UnsignedBinaryNumber binaryNumber){
+        List<Integer> onesComplement = new Vector<Integer>();
+        for (int digit: binaryNumber.getBinaryRepresentation())
+            if (digit == 0)
+                onesComplement.add(1);
+            else
+                onesComplement.add(0);
+        return new UnsignedBinaryNumber(onesComplement);
+    }
+
+    public void ToTwosComplement(){
+        UnsignedBinaryNumber twosComplement = ToTwosComplement(this);
+        this.BinaryRepresentation = twosComplement.getBinaryRepresentation();
+    }
+
+    public static UnsignedBinaryNumber ToTwosComplement(UnsignedBinaryNumber binaryNumber){
+        UnsignedBinaryNumber onesComplement = ToOnesComplement(binaryNumber);
+        UnsignedBinaryNumber binaryNumber1 = new UnsignedBinaryNumber(1, onesComplement.Length);
+        binaryNumber1.setOverflown(true);
+        return Add(onesComplement, binaryNumber1);
     }
 
     public SignedBinaryNumber ToOpposite(){
-        throw new UnsupportedOperationException();
+        UnsignedBinaryNumber twosComplement = ToTwosComplement(this);
+        return new SignedBinaryNumber(twosComplement.getBinaryRepresentation());
     }
 
-    public UnsignedBinaryNumber toSigned(){
-        throw new UnsupportedOperationException();
+    public SignedBinaryNumber toSigned(){
+        List<Integer> oppositeBinaryRepresentation = new Vector<Integer>();
+        oppositeBinaryRepresentation.add(0);
+        for (int digit: BinaryRepresentation)
+            oppositeBinaryRepresentation.add(digit);
+        return new SignedBinaryNumber(oppositeBinaryRepresentation);
+    }
+
+    public SignedBinaryNumber toSigned(SignedBinaryEncoding encoding){
+        List<Integer> oppositeBinaryRepresentation = new Vector<Integer>();
+        oppositeBinaryRepresentation.add(0);
+        for (int digit: BinaryRepresentation)
+            oppositeBinaryRepresentation.add(digit);
+        return new SignedBinaryNumber(oppositeBinaryRepresentation);
     }
 
     public static boolean CanFitInRepresentation(int value, int length){
-        throw new UnsupportedOperationException();
+        return value > -1 && MaxValueAbsoluteForLength(length) >= length;
     }
 
-    public boolean CanFitInRepresentation(){
-        throw new UnsupportedOperationException();
+    public boolean CanFitInRepresentation(int value){
+        if (UserDefinedLength)
+            return value >= 0 && value < MaxValue;
+        else
+            return value >= 0;
     }
 
     public static boolean CanFitInRepresentation(UnsignedBinaryNumber value, int length){
@@ -341,7 +479,11 @@ public class UnsignedBinaryNumber {
         throw new UnsupportedOperationException();
     }
 
-    public int Shorten(){
+    public int ShortenBy(int amount){
+        throw new UnsupportedOperationException();
+    }
+
+    public int ShortenTo(int newPosition){
         throw new UnsupportedOperationException();
     }
 
@@ -359,6 +501,10 @@ public class UnsignedBinaryNumber {
 
     public int getMinValue() {
         return MinValue;
+    }
+
+    public List<Integer> getBinaryRepresentation() {
+        return BinaryRepresentation;
     }
 
     @Override
