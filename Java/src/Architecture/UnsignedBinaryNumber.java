@@ -2,6 +2,7 @@ package Architecture;
 
 import com.sun.jdi.event.ExceptionEvent;
 
+import java.awt.*;
 import java.nio.BufferOverflowException;
 import java.util.List;
 import java.util.Vector;
@@ -41,6 +42,7 @@ public class UnsignedBinaryNumber {
 
     public UnsignedBinaryNumber(String number) {
         char[] numberChars = number.toCharArray();
+        List<Integer> list = new Vector<>();
         List<Integer> binaryRepresentation = new Vector<Integer>();
         int computedLength = 0;
         for (char digit : numberChars) {
@@ -397,7 +399,8 @@ public class UnsignedBinaryNumber {
     }
 
     public static int MinimumLengthForRepresentation(UnsignedBinaryNumber unsignedBinaryNumber){
-        throw new UnsupportedOperationException();
+        UnsignedBinaryNumber squeezedUnsignedBinaryNumber = UnsignedBinaryNumber.Squeeze(unsignedBinaryNumber);
+        return squeezedUnsignedBinaryNumber.CurrentLength();
     }
 
     public static int MinimumLengthForRepresentation(SignedBinaryNumber signedBinaryNumber){
@@ -479,6 +482,10 @@ public class UnsignedBinaryNumber {
         throw new UnsupportedOperationException();
     }
 
+    public static UnsignedBinaryNumber Squeeze(UnsignedBinaryNumber input){
+        throw new UnsupportedOperationException();
+    }
+
     public int ShortenBy(int amount){
         throw new UnsupportedOperationException();
     }
@@ -507,8 +514,38 @@ public class UnsignedBinaryNumber {
         return BinaryRepresentation;
     }
 
+    public static boolean Equals(UnsignedBinaryNumber firstNumber, UnsignedBinaryNumber secondNumber){
+        UnsignedBinaryNumber firstSqueezed = Squeeze(firstNumber);
+        UnsignedBinaryNumber secondSqueezed = Squeeze(secondNumber);
+        int representationSizeFirst = firstSqueezed.RepresentationSize();
+        int representationSizeSecond = secondSqueezed.RepresentationSize();
+        if (representationSizeFirst == representationSizeSecond) {
+            List<Integer> objRepresentationFirst = firstSqueezed.getBinaryRepresentation();
+            List<Integer> objRepresentationSecond = secondSqueezed.getBinaryRepresentation();
+            int i = 0;
+            while (i < representationSizeFirst && objRepresentationFirst.get(i) == objRepresentationSecond.get(i)) {
+                i += 1;
+            }
+            return i == representationSizeFirst;
+        }
+        else
+            return false;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        throw new UnsupportedOperationException();
+        if (obj instanceof UnsignedBinaryNumber){
+            return Equals(this, (UnsignedBinaryNumber) obj);
+        }
+        else if (obj instanceof SignedBinaryNumber){
+            //TODO
+            return false;
+        }
+        else if (obj instanceof BasedInt){
+            //TODO
+            return false;
+        }
+        else
+            return false;
     }
 }
