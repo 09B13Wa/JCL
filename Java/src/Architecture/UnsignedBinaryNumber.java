@@ -180,7 +180,7 @@ public class UnsignedBinaryNumber {
 
     private List<Integer> toBinNumber(int integer){
         int listSize = MinimumLengthForRepresentation(integer);
-        int powerOfTwo = (int)Math.pow(2, listSize);
+        int powerOfTwo = (int)Math.pow(2, listSize - 1);
         List<Integer> newRepresentation = new Vector<Integer>();
         for (int i = 0; i < listSize; i++){
             int valueToAdd = 0;
@@ -367,6 +367,25 @@ public class UnsignedBinaryNumber {
 
     public SignedBinaryNumber toSigned(SignedBinaryEncoding encoding){
         List<Integer> oppositeBinaryRepresentation = new Vector<Integer>();
+        //TODO: Finish this when signed binary numbers are implemented
+        switch (encoding) {
+            case MAGNITUDE:
+                break;
+            case ONES_COMPLEMENT_ENCODING:
+                break;
+            case TWOS_COMPLEMENT_ENCODING:
+                break;
+            case BASE_2:
+                break;
+            case SIGNED_DIGIT:
+                break;
+            case OFFSET_BINARY:
+                break;
+            case ZIG_ZAG:
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown encoding for signed binary numbers");
+        }
         oppositeBinaryRepresentation.add(0);
         for (int digit: BinaryRepresentation)
             oppositeBinaryRepresentation.add(digit);
@@ -385,7 +404,8 @@ public class UnsignedBinaryNumber {
     }
 
     public static boolean CanFitInRepresentation(UnsignedBinaryNumber value, int length){
-        throw new UnsupportedOperationException();
+        UnsignedBinaryNumber shortened = Squeeze(value);
+        return true;
     }
 
     public static boolean CanFitInRepresentation(SignedBinaryNumber value, int length){
@@ -409,7 +429,17 @@ public class UnsignedBinaryNumber {
     }
 
     public static int MinimumLengthForRepresentation(int value){
-        throw new UnsupportedOperationException();
+        int length = 0;
+        if (value == 0)
+            length = 1;
+        else{
+            int powerOfTwo = 1;
+            while (powerOfTwo - 1 < value){
+                length += 1;
+                powerOfTwo *= 2;
+            }
+        }
+        return length;
     }
 
     public static int MaxValueForRepresentation(UnsignedBinaryNumber unsignedBinaryNumber){
@@ -476,6 +506,10 @@ public class UnsignedBinaryNumber {
     }
 
     public int Squeeze(){
+        throw new UnsupportedOperationException();
+    }
+
+    public static UnsignedBinaryNumber Squeeze(UnsignedBinaryNumber input){
         throw new UnsupportedOperationException();
     }
 
