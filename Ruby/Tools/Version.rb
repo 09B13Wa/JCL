@@ -8,4 +8,8 @@ class Version
     @minor_revision = -1
     @revision = -1
   end
+
+  def get_version_string()
+
+  end
 end
