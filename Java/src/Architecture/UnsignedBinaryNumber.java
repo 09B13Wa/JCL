@@ -26,7 +26,7 @@ public class UnsignedBinaryNumber {
 
     public UnsignedBinaryNumber(int entryValue, int length) {
         entryValue = CheckIfPositive(entryValue);
-        BinaryRepresentation = toBinNumber(entryValue);
+        BinaryRepresentation = toBinNumber(entryValue, length);
         int actualLength = BinaryRepresentation.size();
         if (actualLength <= length) {
             Length = length;
@@ -73,7 +73,7 @@ public class UnsignedBinaryNumber {
                 binaryRepresentation.add(1);
             else
                 throw new IllegalArgumentException("Declaring an unsigned binary number from a string requires the" +
-                        "ti be made up of only 0s and 1s");
+                        "string to be made up of only 0s and 1s");
             computedLength += 1;
         }
         if (computedLength <= length) {
@@ -154,7 +154,7 @@ public class UnsignedBinaryNumber {
     }
 
     public UnsignedBinaryNumber(BasedInt basedNumber, int length){
-        if (basedNumber.getSign() == BaseSign.POSITIVE) {
+        if (basedNumber.getSign() == BaseSign.POSITIVE || basedNumber.getSign() == BaseSign.NIL) {
             int equivalentValue = basedNumber.getValue();
             BinaryRepresentation = toBinNumber(equivalentValue);
             int actualLength = BinaryRepresentation.size();
@@ -169,7 +169,7 @@ public class UnsignedBinaryNumber {
                         "Minimum is " + actualLength + " but got " + length);
             }
         } else {
-            throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
+            throw new IllegalArgumentException("JCL-Error: Unsigned binary numbers must be positive");
         }
     }
 
@@ -177,14 +177,30 @@ public class UnsignedBinaryNumber {
         if (value >= 0)
             return value;
         else
-            throw new IllegalArgumentException("Error: Unsigned binary numbers must be positive");
+            throw new IllegalArgumentException("JCL-Error: Unsigned binary numbers must be positive");
     }
 
-    private List<Integer> toBinNumber(int integer){
+    public static List<Integer> toBinNumber(int integer){
         int listSize = MinimumLengthForRepresentation(integer);
         int powerOfTwo = (int)Math.pow(2, listSize - 1);
         List<Integer> newRepresentation = new Vector<Integer>();
         for (int i = 0; i < listSize; i++){
+            int valueToAdd = 0;
+            if (integer >= powerOfTwo) {
+                valueToAdd = 1;
+                integer -= powerOfTwo;
+            }
+            newRepresentation.add(valueToAdd);
+            powerOfTwo /= 2;
+        }
+
+        return newRepresentation;
+    }
+
+    private List<Integer> toBinNumber(int integer, int length){
+        int powerOfTwo = (int)Math.pow(2, length - 1);
+        List<Integer> newRepresentation = new Vector<Integer>();
+        for (int i = 0; i < length; i++){
             int valueToAdd = 0;
             if (integer >= powerOfTwo) {
                 valueToAdd = 1;
@@ -246,7 +262,7 @@ public class UnsignedBinaryNumber {
         }
 
         List<Integer> result = new Vector<Integer>();
-        for (int i = 0; i < minimumNumberOfNumbers; i++){
+        for (int i = minimumNumberOfNumbers - 1; i >= 0; i--){
             int sum = otherRepresentation.get(i) + firstRepresentation.get(i) + toAddAfter.get(i);
             int directResult = 0;
             int toAddOn = 0;
@@ -266,7 +282,7 @@ public class UnsignedBinaryNumber {
                 default:
                     throw new ArithmeticException("Error: addition of sub-parts too great");
             }
-            result.add(i, directResult);
+            result.add(directResult);
             toAddAfter.add(i + 1, toAddOn);
         }
 
@@ -446,7 +462,7 @@ public class UnsignedBinaryNumber {
     }
 
     public static int MaxValueForRepresentation(UnsignedBinaryNumber unsignedBinaryNumber){
-        throw new UnsupportedOperationException();
+        return unsignedBinaryNumber.getMaxValue();
     }
 
     public static int MaxValueForRepresentation(SignedBinaryNumber signedBinaryNumber){
@@ -509,19 +525,52 @@ public class UnsignedBinaryNumber {
     }
 
     public int Squeeze(){
-        throw new UnsupportedOperationException();
+        int amountToShortenBy = 0;
+        if (Length > 0){
+            int index = 0;
+            int digit = BinaryRepresentation.get(0);
+            while (index < Length && digit == 0){
+                index += 1;
+                amountToShortenBy += 1;
+                digit = BinaryRepresentation.get(digit);
+            }
+        }
+        ShortenBy(amountToShortenBy);
+        return amountToShortenBy;
     }
 
     public static UnsignedBinaryNumber Squeeze(UnsignedBinaryNumber input){
-        throw new UnsupportedOperationException();
+        UnsignedBinaryNumber toSqueeze = new UnsignedBinaryNumber(input.ToValue());
+        toSqueeze.Squeeze();
+        return toSqueeze;
     }
 
-    public int ShortenBy(int amount){
-        throw new UnsupportedOperationException();
+    public void ShortenBy(int amount){
+        if (amount <= Length){
+            List<Integer> newRepresentation = new Vector<Integer>();
+            int target = Length - amount;
+            int newLength = 0;
+            for (int i = target; i < Length; i++){
+                newRepresentation.add(BinaryRepresentation.get(i));
+                newLength += 1;
+            }
+            MaxValue = MaxValueAbsoluteForLength(newLength);
+            Length = newLength;
+            BinaryRepresentation = newRepresentation;
+        }
+        else throw new IllegalArgumentException("Error: the amount " + amount + " is to great for to shorten by for the" +
+                "\nunsigned binary number of length " + Length);
     }
 
-    public int ShortenTo(int newPosition){
-        throw new UnsupportedOperationException();
+    public void ShortenTo(int newPosition){
+        if (newPosition < 0)
+            throw new IndexOutOfBoundsException("Error: " + newPosition + " is too low to be a valid index (negative value).");
+        else if (newPosition >= Length)
+            throw new IndexOutOfBoundsException("Error: " + newPosition + " is outside of the range. The maximum is " + (Length - 1));
+        else {
+            int shortenByLength = Length - newPosition - 1;
+            ShortenBy(shortenByLength);
+        }
     }
 
     public int CurrentLength(){
