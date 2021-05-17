@@ -130,9 +130,35 @@ namespace Numbers
             return decimalBinary;
         }
 
-        private (List<int>, int) ToDenormalized()
+        private (List<int>, int) ToDenormalized(List<int> integralPart, List<int> decimalPart)
         {
-            
+            List<int> denormalized = new List<int>() {0};
+            int integralPartLen = integralPart.Count;
+            int offset = 0;
+            int exponent = 0;
+            if (integralPartLen > 0)
+            {
+                while (integralPartLen != 0)
+                {
+                    exponent += 1;
+                    decimalPart.Add(integralPart[offset]);
+                    integralPartLen -= 1;
+                }
+            }
+
+            bool isUseless = true;
+            foreach (int digit in decimalPart)
+            {
+                if (isUseless && digit != 0)
+                    isUseless = false;
+                else if (!isUseless)
+                {
+                    denormalized.Insert(0, digit);
+                    exponent -= 1;
+                }
+            }
+
+            return (decimalPart, exponent);
         }
     }
 }
