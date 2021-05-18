@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 namespace Numbers
 {
@@ -30,6 +31,27 @@ namespace Numbers
         private int[] _exponentArray;
         private int[] _mantissaArray;
 
+        public FloatingPointNumber(FloatingPointValueType specialKind)
+        {
+            switch (specialKind)
+            {
+                case FloatingPointValueType.POSITIVE_INFINITY:
+                    break;
+                case FloatingPointValueType.NEGATIVE_INFINITY:
+                    break;
+                case FloatingPointValueType.POSITIVE_ZERO:
+                    break;
+                case FloatingPointValueType.NEGATIVE_ZERO:
+                    break;
+                case FloatingPointValueType.NOT_A_NUMBER:
+                    break;
+                case FloatingPointValueType.DENORMALIZED:
+                    break;
+                case FloatingPointValueType.NORMALIZED:
+                    break;
+            }
+        }
+
         public FloatingPointNumber(float floatingPointNumber, Precision precision = Precision.SINGLE_PRECISION, bool denormalized = false)
         {
             if (floatingPointNumber != 0f && floatingPointNumber != Single.PositiveInfinity && floatingPointNumber != Single.NegativeInfinity)
@@ -39,10 +61,15 @@ namespace Numbers
                     _signArray[0] = 1;
                 else
                     _signArray[0] = 1;
-                (List<int> integralPart, List<int> decimalPart)
-                    baseBinaryRepresentation = ToBinary(floatingPointNumber);
+                (List<int> integralPart, List<int> decimalPart) baseBinaryRepresentation = ToBinary(floatingPointNumber);
+                (List<int> mantissa, int exponent) result = (null, 0);
+                if (denormalized)
+                    result = DenormalizedMantissa(baseBinaryRepresentation.integralPart,
+                        baseBinaryRepresentation.decimalPart);
+                else
+                    result = NormalizedMantissa(baseBinaryRepresentation.integralPart,
+                        baseBinaryRepresentation.decimalPart);
             }
-
         }
         
         public FloatingPointNumber(double floatingPointNumber, Precision precision = Precision.DOUBLE_PRECISION)
@@ -130,20 +157,18 @@ namespace Numbers
             return decimalBinary;
         }
 
-        private (List<int>, int) ToDenormalized(List<int> integralPart, List<int> decimalPart)
+        private (List<int>, int) DenormalizedMantissa(List<int> integralPart, List<int> decimalPart)
         {
-            List<int> denormalized = new List<int>() {0};
+            List<int> denormalized = new List<int>();
             int integralPartLen = integralPart.Count;
             int offset = 0;
             int exponent = 0;
-            if (integralPartLen > 0)
+            
+            while (integralPartLen != 0)
             {
-                while (integralPartLen != 0)
-                {
-                    exponent += 1;
-                    decimalPart.Add(integralPart[offset]);
-                    integralPartLen -= 1;
-                }
+                exponent += 1;
+                decimalPart.Add(integralPart[offset]);
+                integralPartLen -= 1;
             }
 
             bool isUseless = true;
@@ -158,7 +183,73 @@ namespace Numbers
                 }
             }
 
-            return (decimalPart, exponent);
+            return (denormalized, exponent);
+        }
+
+        private (List<int>, int) NormalizedMantissa(List<int> integralPart, List<int> decimalPart)
+        {
+            List<int> normalized = new List<int>();
+            int integralPartLen = integralPart.Count;
+            int offset = 0;
+            int exponent = 0;
+            int index = 0;
+            while (index < integralPartLen && integralPart[index] != 1)
+                index += 1;
+            return (normalized, exponent);
+        }
+
+        private FloatingPointValueType DetectActualType(float num, bool denormalized)
+        {
+            FloatingPointValueType actualType;
+            if (num == 0f)
+                actualType = FloatingPointValueType.POSITIVE_ZERO;
+            else if (num == -0f)
+                actualType = FloatingPointValueType.NEGATIVE_ZERO;
+            else if (num is float.PositiveInfinity)
+                actualType = FloatingPointValueType.POSITIVE_INFINITY;
+            else if (num is float.NegativeInfinity)
+                actualType = FloatingPointValueType.NEGATIVE_INFINITY;
+            else if (num is float.NaN)
+                actualType = FloatingPointValueType.NOT_A_NUMBER;
+            else if (denormalized)
+                actualType = FloatingPointValueType.DENORMALIZED;
+            else
+                actualType = FloatingPointValueType.NORMALIZED;
+            return actualType;
+        }
+        
+        private FloatingPointValueType DetectActualType(double num, bool denormalized)
+        {
+            FloatingPointValueType actualType;
+            if (num == 0.0)
+                actualType = FloatingPointValueType.POSITIVE_ZERO;
+            else if (num == -0.0)
+                actualType = FloatingPointValueType.NEGATIVE_ZERO;
+            else if (num is double.PositiveInfinity)
+                actualType = FloatingPointValueType.POSITIVE_INFINITY;
+            else if (num is double.NegativeInfinity)
+                actualType = FloatingPointValueType.NEGATIVE_INFINITY;
+            else if (num is double.NaN)
+                actualType = FloatingPointValueType.NOT_A_NUMBER;
+            else if (denormalized)
+                actualType = FloatingPointValueType.DENORMALIZED;
+            else
+                actualType = FloatingPointValueType.NORMALIZED;
+            return actualType;
+        }
+        
+        private FloatingPointValueType DetectActualType(decimal num, bool denormalized)
+        {
+            FloatingPointValueType actualType;
+            if (num == 0)
+                actualType = FloatingPointValueType.POSITIVE_ZERO;
+            else if (num == -0)
+                actualType = FloatingPointValueType.NEGATIVE_ZERO;
+            else if (denormalized)
+                actualType = FloatingPointValueType.DENORMALIZED;
+            else
+                actualType = FloatingPointValueType.NORMALIZED;
+            return actualType;
         }
     }
 }
