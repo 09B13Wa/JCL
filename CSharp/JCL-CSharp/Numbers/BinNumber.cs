@@ -30,6 +30,7 @@ namespace Numbers
             }
 
             return newRepresentation;
+            FloatingPointNumber num = new FloatingPointNumber(FloatingPointValueType.NEGATIVE_ZERO);
         }
 
         public static List<uint> TwosComplement(List<uint> representation)

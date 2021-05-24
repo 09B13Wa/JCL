@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.ExceptionServices;
-using System.Runtime.Remoting.Messaging;
+using System.Collections.ObjectModel;
 
 namespace Numbers
 {
@@ -23,7 +22,7 @@ namespace Numbers
         DENORMALIZED,
         NOT_A_NUMBER
     }
-    
+
     public class FloatingPointNumber
     {
         private Precision _precision;
@@ -31,39 +30,56 @@ namespace Numbers
         private int[] _signArray;
         private int[] _exponentArray;
         private int[] _mantissaArray;
-
-        public BaseSign Sign
-        {
-            get => _signArray[0] == 0 ? BaseSign.POSITIVE : BaseSign.NEGATIVE;
-            set => _signArray[0] = value == BaseSign.POSITIVE ?  0 : 1;
-        }
+        private FloatingPointValueType _floatingPointValueType;
 
         public FloatingPointNumber(FloatingPointValueType specialKind)
         {
             switch (specialKind)
             {
                 case FloatingPointValueType.POSITIVE_INFINITY:
+                    SetUpInfinity(FloatingPointValueType.POSITIVE_INFINITY);
                     break;
                 case FloatingPointValueType.NEGATIVE_INFINITY:
+                    SetUpInfinity(FloatingPointValueType.NEGATIVE_INFINITY);
                     break;
                 case FloatingPointValueType.POSITIVE_ZERO:
+                    SetUpZero(FloatingPointValueType.POSITIVE_ZERO);
                     break;
                 case FloatingPointValueType.NEGATIVE_ZERO:
+                    SetUpZero(FloatingPointValueType.NEGATIVE_ZERO);
                     break;
                 case FloatingPointValueType.NOT_A_NUMBER:
+                    SetUpNaN();
                     break;
                 case FloatingPointValueType.DENORMALIZED:
+                    SetUpZero(FloatingPointValueType.POSITIVE_ZERO);
                     break;
                 case FloatingPointValueType.NORMALIZED:
+                    SetUpZero(FloatingPointValueType.POSITIVE_ZERO);
                     break;
             }
         }
 
+        public FloatingPointNumber(List<int> values, Precision precision = Precision.SINGLE_PRECISION, bool denormalized = false)
+        {
+            InitializeArrays(precision);
+            _precision = precision;
+            int numberOfValues = values.Count;
+            if (numberOfValues == Size)
+            {
+                
+            }
+            else
+                throw new LengthNotDeclaredPrecisionException($"Error: declared a {precision.ToString()} floating point number " +
+                                                              $"which has a total length of {Size} but got a list of {numberOfValues} elements." +
+                                                              "\nboth values must be equal.");
+        }
+
         public FloatingPointNumber(float floatingPointNumber, Precision precision = Precision.SINGLE_PRECISION)
         {
-            
+
         }
-        
+
         public FloatingPointNumber(double floatingPointNumber, Precision precision = Precision.DOUBLE_PRECISION)
         {
             InitializeArrays(precision);
@@ -72,7 +88,7 @@ namespace Numbers
             else
                 _signArray[0] = 1;
         }
-        
+
         public FloatingPointNumber(decimal floatingPointNumber, Precision precision = Precision.QUAD_PRECISION)
         {
             InitializeArrays(precision);
@@ -80,6 +96,44 @@ namespace Numbers
                 _signArray[0] = 1;
             else
                 _signArray[0] = 1;
+        }
+
+        public BaseSign Sign
+        {
+            get => _signArray[0] == 0 ? BaseSign.POSITIVE : BaseSign.NEGATIVE;
+            set => _signArray[0] = value == BaseSign.POSITIVE ? 0 : 1;
+        }
+
+        public int[] MantissaField
+        {
+            get => _mantissaArray;
+            set => InitializeMantissa(value);
+        }
+        
+        public int[] ExponentField
+        {
+            get => _exponentArray;
+            set => InitializeExponent(value);
+        }
+
+        public int[] SignField
+        {
+            get => _signArray;
+            set => InitializeSign(value);
+        }
+
+        public int MSize => _mantissaArray.Length;
+        public int ESize => _exponentArray.Length;
+        public int SSize => 1;
+
+        public int Size => MSize + ESize + 1;
+
+        public FloatingPointValueType Kind => _floatingPointValueType;
+
+        public Precision Precision
+        {
+            get => _precision;
+            set => ChangePrecision(value);
         }
 
         private void InitializeArrays(Precision precision)
@@ -104,6 +158,109 @@ namespace Numbers
                     _mantissaArray = new int[112];
                     break;
             }
+        }
+
+        private void InitializeMantissa(int[] array)
+        {
+            
+        }
+        
+        private void InitializeExponent(int[] array)
+        {
+            
+        }
+        
+        private void InitializeSign(int[] array)
+        {
+            
+        }
+
+        private void ChangePrecision(Precision newPrecision)
+        {
+            
+        }
+
+        private void InitializeFromCollection(List<int> values, Precision precision)
+        {
+            InitializeArrays(precision);
+            _precision = precision;
+            int numberOfValues = values.Count;
+            if (numberOfValues == Size)
+            {
+                (int s, int e, int m) size = (SSize, ESize, MSize);
+                for (int i = 0; i < size.s; i++)
+                    _exponentArray[i] = CheckBinaryDigit(values[i]);
+                for (int i = size.s; i < size.e; i++)
+                    _exponentArray[i - size.s] = CheckBinaryDigit(values[i]);
+                for (int i = size.e; i < size.m; i++)
+                    _mantissaArray[i - size.e - 1] = CheckBinaryDigit(values[i]);
+            }
+            else
+                throw new LengthNotDeclaredPrecisionException($"Error: declared a {precision.ToString()} floating point number " +
+                                                              $"which has a total length of {Size} but got a list of {numberOfValues} elements." +
+                                                              "\nboth values must be equal.");
+        }
+        private void InitializeFromCollection(int[] values, Precision precision)
+        {
+            InitializeArrays(precision);
+            _precision = precision;
+            int numberOfValues = values.Length;
+            if (numberOfValues == Size)
+            {
+                (int s, int e, int m) size = (SSize, ESize, MSize);
+                for (int i = 0; i < size.s; i++)
+                    _exponentArray[i] = CheckBinaryDigit(values[i]);
+                for (int i = size.s; i < size.e; i++)
+                    _exponentArray[i - size.s] = CheckBinaryDigit(values[i]);
+                for (int i = size.e; i < size.m; i++)
+                    _mantissaArray[i - size.e - 1] = CheckBinaryDigit(values[i]);
+            }
+            else
+                throw new LengthNotDeclaredPrecisionException($"Error: declared a {precision.ToString()} floating point number " +
+                                                              $"which has a total length of {Size} but got a list of {numberOfValues} elements." +
+                                                              "\nboth values must be equal.");
+        }
+
+        /// <summary>
+        /// Checks an integer list to make sure it is compatible with binary number formats. i.e. has only 0s and 1s
+        /// </summary>
+        /// <param name="integerList">The list of integers (int) to check</param>
+        /// <exception cref="NotABinaryNumberException">Exception throw if list element is neither 0 or 1</exception>
+        public void CheckInputArray(List<int> integerList)
+        {
+            foreach (int digit in integerList)
+                if (digit != 0 && digit != 1)
+                    throw new NotABinaryNumberException($"Error: {digit} is not a 0 or 1.");
+        }
+        
+        /// <summary>
+        /// Checks an integer array to make sure it is compatible with binary number formats. i.e. has only 0s and 1s
+        /// </summary>
+        /// <param name="integerArray">The array of integers (int) to check</param>
+        /// <exception cref="NotABinaryNumberException">Exception throw if list element is neither 0 or 1</exception>
+        public void CheckInputArray(int[] integerArray)
+        {
+            foreach (int digit in integerArray)
+                if (digit != 0 && digit != 1)
+                    throw new NotABinaryNumberException($"Error: {digit} is not a 0 or 1.");
+        }
+
+        /// <summary>
+        /// Checks an integer to make sure it is a binary digit. i.e. 0 or 1
+        /// </summary>
+        /// <param name="digit">the int to check</param>
+        /// <returns>the digit passed in</returns>
+        /// <exception cref="NotABinaryNumberException">is thrown if the digit isn't 0 or 1</exception>
+        public int CheckBinaryDigit(int digit)
+        {
+            int returnValue;
+            if (digit == 0)
+                returnValue = 0;
+            else if (digit == 1)
+                returnValue = 1;
+            else
+                throw new NotABinaryNumberException($"Error: {digit} is not a 0 or 1.");
+            return returnValue;
         }
 
         private (List<int>, List<int>) ToBinary(float input)

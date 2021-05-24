@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DateTime", "DateTime\DateTi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Math", "Math\Math.csproj", "{16422D6E-1B8E-44C5-BCC9-0DB9E01ADB5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainTest", "MainTest\MainTest.csproj", "{7706957F-A8E3-427F-AAEB-27B511CE9663}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{16422D6E-1B8E-44C5-BCC9-0DB9E01ADB5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16422D6E-1B8E-44C5-BCC9-0DB9E01ADB5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16422D6E-1B8E-44C5-BCC9-0DB9E01ADB5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7706957F-A8E3-427F-AAEB-27B511CE9663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7706957F-A8E3-427F-AAEB-27B511CE9663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7706957F-A8E3-427F-AAEB-27B511CE9663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7706957F-A8E3-427F-AAEB-27B511CE9663}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
