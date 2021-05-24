@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
+using System.Runtime.Remoting.Messaging;
 
 namespace Numbers
 {
@@ -31,6 +32,12 @@ namespace Numbers
         private int[] _exponentArray;
         private int[] _mantissaArray;
 
+        public BaseSign Sign
+        {
+            get => _signArray[0] == 0 ? BaseSign.POSITIVE : BaseSign.NEGATIVE;
+            set => _signArray[0] = value == BaseSign.POSITIVE ?  0 : 1;
+        }
+
         public FloatingPointNumber(FloatingPointValueType specialKind)
         {
             switch (specialKind)
@@ -52,24 +59,9 @@ namespace Numbers
             }
         }
 
-        public FloatingPointNumber(float floatingPointNumber, Precision precision = Precision.SINGLE_PRECISION, bool denormalized = false)
+        public FloatingPointNumber(float floatingPointNumber, Precision precision = Precision.SINGLE_PRECISION)
         {
-            if (floatingPointNumber != 0f && floatingPointNumber != Single.PositiveInfinity && floatingPointNumber != Single.NegativeInfinity)
-            {
-                InitializeArrays(precision);
-                if (floatingPointNumber < 0)
-                    _signArray[0] = 1;
-                else
-                    _signArray[0] = 1;
-                (List<int> integralPart, List<int> decimalPart) baseBinaryRepresentation = ToBinary(floatingPointNumber);
-                (List<int> mantissa, int exponent) result = (null, 0);
-                if (denormalized)
-                    result = DenormalizedMantissa(baseBinaryRepresentation.integralPart,
-                        baseBinaryRepresentation.decimalPart);
-                else
-                    result = NormalizedMantissa(baseBinaryRepresentation.integralPart,
-                        baseBinaryRepresentation.decimalPart);
-            }
+            
         }
         
         public FloatingPointNumber(double floatingPointNumber, Precision precision = Precision.DOUBLE_PRECISION)
@@ -218,7 +210,7 @@ namespace Numbers
             return actualType;
         }
         
-        private FloatingPointValueType DetectActualType(double num, bool denormalized)
+        private FloatingPointValueType DetectActualType(double num)
         {
             FloatingPointValueType actualType;
             if (num == 0.0)
@@ -231,13 +223,11 @@ namespace Numbers
                 actualType = FloatingPointValueType.NEGATIVE_INFINITY;
             else if (num is double.NaN)
                 actualType = FloatingPointValueType.NOT_A_NUMBER;
-            else if (denormalized)
-                actualType = FloatingPointValueType.DENORMALIZED;
             else
                 actualType = FloatingPointValueType.NORMALIZED;
             return actualType;
         }
-        
+
         private FloatingPointValueType DetectActualType(decimal num, bool denormalized)
         {
             FloatingPointValueType actualType;
@@ -250,6 +240,115 @@ namespace Numbers
             else
                 actualType = FloatingPointValueType.NORMALIZED;
             return actualType;
+        }
+
+        private void InitialSetUpBasedOnType(FloatingPointValueType type, float number)
+        {
+            switch (type)
+            {
+                case FloatingPointValueType.POSITIVE_INFINITY:
+                case FloatingPointValueType.NEGATIVE_INFINITY:
+                    SetUpInfinity(type);
+                    break;
+                case FloatingPointValueType.NEGATIVE_ZERO:
+                case FloatingPointValueType.POSITIVE_ZERO:
+                    SetUpZero(type);
+                    break;
+                case FloatingPointValueType.NOT_A_NUMBER:
+                    SetUpNaN();
+                    break;
+                case FloatingPointValueType.DENORMALIZED:
+                    SetUpDenormalized();
+                    break;
+            }
+        }
+
+        private void SetUpSign(BaseSign sign)
+        {
+            Sign = sign;
+        }
+
+        private void SetUpExponentArrayWithValue(int value)
+        {
+            int exponentArraySize = _exponentArray.Length;
+            for (int i = 0; i < exponentArraySize; i++)
+                _exponentArray[i] = value;
+        }
+        
+        private void SetUpMantissaArrayWithValue(int value)
+        {
+            int mantissaArrayLength = _mantissaArray.Length;
+            for (int i = 0; i < mantissaArrayLength; i++)
+                _mantissaArray[i] = value;
+        }
+
+        private void SetUpInfinity(FloatingPointValueType infinityKind)
+        {
+            if (infinityKind is FloatingPointValueType.POSITIVE_INFINITY)
+                SetUpSign(BaseSign.POSITIVE);
+            else if (infinityKind is FloatingPointValueType.NEGATIVE_INFINITY)
+                SetUpSign(BaseSign.NEGATIVE);
+            else
+                throw new ArgumentException($"Error: {infinityKind} is not a kind of infinity");
+            SetUpExponentArrayWithValue(1);
+            SetUpMantissaArrayWithValue(0);
+        }
+
+        private void SetUpNaN()
+        {
+            _signArray[0] = 0;
+            SetUpExponentArrayWithValue(1);
+            _mantissaArray[0] = 1;
+        }
+
+        private void SetUpZero(FloatingPointValueType zeroKind)
+        {
+            if (zeroKind is FloatingPointValueType.POSITIVE_ZERO)
+                SetUpSign(BaseSign.POSITIVE);
+            else if (zeroKind is FloatingPointValueType.NEGATIVE_ZERO)
+                SetUpSign(BaseSign.NEGATIVE);
+            else
+                throw new ArgumentException($"Error: {zeroKind} is not a kind of zero");
+            SetUpExponentArrayWithValue(0);
+            SetUpMantissaArrayWithValue(0);
+        }
+
+        private void SetUpDenormalized(float input, Precision precision)
+        {
+            (List<int> integralPart, List<int> decimalPart) baseBinaryRepresentation = ToBinary(input);
+            (List<int> mantissa, int exponent) result = DenormalizedMantissa(baseBinaryRepresentation.integralPart,
+                baseBinaryRepresentation.decimalPart);
+            SetUpExponentArrayWithValue(0);
+            int exponent = result.exponent + (1 - GetBias(precision));
+        }
+
+        private int GetBias(Precision precision)
+        {
+            int bias = 0;
+            switch (precision)
+            {
+                case Precision.HALF_PRECISION:
+                    bias = 15;
+                    break;
+                case Precision.SINGLE_PRECISION:
+                    bias = 127;
+                    break;
+                case Precision.DOUBLE_PRECISION:
+                    bias = 1023;
+                    break;
+                case Precision.QUAD_PRECISION:
+                    bias = 16383;
+                    break;
+            }
+
+            return bias;
+        }
+        
+        private int GetBias(int exponentLength)
+        {
+            int basePower = Math.Math.PowerToInt(2, exponentLength);
+
+            return bias;
         }
     }
 }
