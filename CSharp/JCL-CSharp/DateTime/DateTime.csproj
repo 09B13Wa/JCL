@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E9C923E5-57E2-4488-8FAE-E001B5F2F530}</ProjectGuid>
+    <ProjectGuid>{CA4D38D9-F487-44F6-B0E3-082A0EA36BBC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Numbers</RootNamespace>
-    <AssemblyName>Numbers</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>DateTime</RootNamespace>
+    <AssemblyName>DateTime</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>latest</LangVersion>
     <TargetFrameworkProfile />
@@ -34,19 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BaseSign.cs" />
-    <Compile Include="BinNumber.cs" />
-    <Compile Include="FloatingPointNumber.cs" />
-    <Compile Include="Integer.cs" />
-    <Compile Include="NumbersException.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnsignedBinaryNumber.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Math\Math.csproj">
-      <Project>{16422d6e-1b8e-44c5-bcc9-0db9e01adb5a}</Project>
-      <Name>Math</Name>
-    </ProjectReference>
+    <Compile Include="Time.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
