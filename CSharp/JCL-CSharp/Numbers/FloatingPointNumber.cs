@@ -1,14 +1,29 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using Math;
 
 namespace Numbers
 {
+    /// <summary>
+    /// Represents floating point number precisions. Possible values: half precision, single precision, double precision and quad precision.
+    /// </summary>
     public enum Precision
     {
+        /// <summary>
+        /// half precision: 1 wide sign array, 5 wide exponent array, 10 wide mantissa array
+        /// </summary>
         HALF_PRECISION,
+        /// <summary>
+        /// single precision: 1 wide sign array, 8 wide exponent array, 23 wide mantissa array
+        /// </summary>
         SINGLE_PRECISION,
+        /// <summary>
+        /// double precision: 1 wide sign array, 11 wide exponent array, 52 wide mantissa array
+        /// </summary>
         DOUBLE_PRECISION,
+        /// <summary>
+        /// quad precision: 1 wide sign array, 15 wide exponent array, 112 wide mantissa array
+        /// </summary>
         QUAD_PRECISION
     }
 
@@ -77,7 +92,6 @@ namespace Numbers
 
         public FloatingPointNumber(float floatingPointNumber, Precision precision = Precision.SINGLE_PRECISION)
         {
-
         }
 
         public FloatingPointNumber(double floatingPointNumber, Precision precision = Precision.DOUBLE_PRECISION)
@@ -135,6 +149,77 @@ namespace Numbers
             get => _precision;
             set => ChangePrecision(value);
         }
+
+        /// <summary>
+        /// returns a single precision floating point number equal to positive infinity
+        /// </summary>
+        public static FloatingPointNumber PositiveInfinity => new FloatingPointNumber(FloatingPointValueType.POSITIVE_INFINITY);
+        /// <summary>
+        /// returns if the floating point number is positive infinity
+        /// </summary>
+        public bool IsPositiveInfinity => _floatingPointValueType == FloatingPointValueType.POSITIVE_INFINITY;
+
+        /// <summary>
+        /// returns a single precision floating point number equal to negative infinity
+        /// </summary>
+        public static FloatingPointNumber NegativeInfinity => new FloatingPointNumber(FloatingPointValueType.NEGATIVE_INFINITY);
+        /// <summary>
+        /// returns if the floating point number is negative infinity
+        /// </summary>
+        public bool IsNegativeInfinity => _floatingPointValueType == FloatingPointValueType.NEGATIVE_INFINITY;
+
+        /// <summary>
+        /// returns a single precision floating point number equal to positive infinity
+        /// </summary>
+        public static FloatingPointNumber Infinity => PositiveInfinity;
+        /// <summary>
+        /// returns if the floating point number is infinity (positive or negative)
+        /// </summary>
+        public bool IsInfinity => IsPositiveInfinity || IsNegativeInfinity;
+        
+        /// <summary>
+        /// returns a single precision floating point number equal to positive zero
+        /// </summary>
+        public static FloatingPointNumber PositiveZero => new FloatingPointNumber(FloatingPointValueType.POSITIVE_ZERO);
+        /// <summary>
+        /// returns if the floating point number is positive zero
+        /// </summary>
+        public bool IsPositiveZero => _floatingPointValueType == FloatingPointValueType.POSITIVE_ZERO;
+        
+        /// <summary>
+        /// returns a single precision floating point number equal to negative zero
+        /// </summary>
+        public static FloatingPointNumber NegativeZero => new FloatingPointNumber(FloatingPointValueType.NEGATIVE_ZERO);
+        /// <summary>
+        /// returns if the floating point number is negative zero
+        /// </summary>
+        public bool IsNegativeZero => _floatingPointValueType == FloatingPointValueType.NEGATIVE_ZERO;
+
+        /// <summary>
+        /// returns a single precision floating point number equal to positive zero
+        /// </summary>
+        public static FloatingPointNumber Zero => PositiveZero;
+        /// <summary>
+        /// returns if the floating point number is positive or negative zero.
+        /// </summary>
+        public bool IsZero => IsPositiveZero || IsNegativeZero;
+
+        /// <summary>
+        /// returns a single precision floating point number equal to not-a-number (NaN)
+        /// </summary>
+        public static FloatingPointNumber NotANumber => new FloatingPointNumber(FloatingPointValueType.NOT_A_NUMBER);
+        /// <summary>
+        /// returns a single precision floating point number equal to not-a-number (NaN)
+        /// </summary>
+        public static FloatingPointNumber NaN => NotANumber;
+        /// <summary>
+        /// returns if the floating point number is not-a-number (NaN)
+        /// </summary>
+        public bool IsNotANumber => _floatingPointValueType == FloatingPointValueType.NOT_A_NUMBER;
+        /// <summary>
+        /// returns if the floating point number is not-a-number (NaN)
+        /// </summary>
+        public bool IsNaN => IsNotANumber;
 
         private void InitializeArrays(Precision precision)
         {
@@ -415,7 +500,8 @@ namespace Numbers
                     SetUpNaN();
                     break;
                 case FloatingPointValueType.DENORMALIZED:
-                    SetUpDenormalized();
+                    //TODO:Fix
+                    SetUpDenormalized(3.4f, _precision);
                     break;
             }
         }
@@ -501,10 +587,9 @@ namespace Numbers
             return bias;
         }
         
-        private int GetBias(int exponentLength)
+        private static int GetBias(int exponentLength)
         {
-            int basePower = Math.Math.PowerToInt(2, exponentLength);
-
+            int bias = Math.Math.PowerToInt(2, exponentLength - 1) - 1;
             return bias;
         }
     }
