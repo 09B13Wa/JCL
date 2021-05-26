@@ -48,5 +48,67 @@ namespace Math
 
             return power;
         }
+
+        public static uint AbsoluteValue(uint value)
+        {
+            return value;
+        }
+        
+        public static int AbsoluteValue(int value)
+        {
+            int absoluteValue;
+            if (value < 0)
+                absoluteValue = value * -1;
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
+        
+        public static byte AbsoluteValue(byte value)
+        {
+            return value;
+        }
+        
+        public static sbyte AbsoluteValue(sbyte value)
+        {
+            sbyte absoluteValue;
+            sbyte minusOne = -1;
+            if (value < 0)
+                absoluteValue = (sbyte) (minusOne * value);
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
+
+        public static ushort AbsoluteValue(ushort value)
+        {
+            return value;
+        }
+        
+        public static short AbsoluteValue(short value)
+        {
+            short absoluteValue;
+            short minusOne = -1;
+            if (value < 0)
+                absoluteValue = (short) (minusOne * value);
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
+        
+        public static ulong AbsoluteValue(ulong value)
+        {
+            return value;
+        }
+        
+        public static long AbsoluteValue(long value)
+        {
+            long absoluteValue;
+            if (value < 0)
+                absoluteValue = value * -1;
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
     }
 }

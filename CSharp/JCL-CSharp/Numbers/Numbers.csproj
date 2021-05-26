@@ -38,7 +38,9 @@
     <Compile Include="BinNumber.cs" />
     <Compile Include="FloatingPointNumber.cs" />
     <Compile Include="Integer.cs" />
+    <Compile Include="Number.cs" />
     <Compile Include="NumbersException.cs" />
+    <Compile Include="INumerable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnsignedBinaryNumber.cs" />
   </ItemGroup>
