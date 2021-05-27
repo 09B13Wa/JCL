@@ -11,7 +11,7 @@
         <AssemblyName>GeneralTools</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>9</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,6 +40,8 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="ICopiable.cs" />
+        <Compile Include="IIdentityable.cs" />
+        <Compile Include="IZeroable.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

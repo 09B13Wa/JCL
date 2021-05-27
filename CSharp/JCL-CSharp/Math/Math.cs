@@ -7,6 +7,9 @@ namespace Math
     {
         public static double Pi => 3.141592653589793;
         public static double E => 2.718281828459045;
+        
+        public static decimal PiDecimal => (decimal) 3.141592653589793;
+        public static decimal EDecimal => (decimal) 2.718281828459045;
 
         public static int PowerToInt(int x, int n)
         {
@@ -109,6 +112,45 @@ namespace Math
             else
                 absoluteValue = value;
             return absoluteValue;
+        }
+
+        public static byte Abs(byte value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static sbyte Abs(sbyte value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static uint Abs(uint value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static int Abs(int value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static ulong Abs(ulong value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static long Abs(long value)
+        {
+            return AbsoluteValue(value);
+        }
+        public static ushort Abs(ushort value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static short Abs(short value)
+        {
+            return AbsoluteValue(value);
         }
     }
 }
