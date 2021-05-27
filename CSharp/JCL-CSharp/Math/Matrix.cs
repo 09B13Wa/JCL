@@ -10,7 +10,14 @@ namespace Math
         NON_INVERTIBLE = 2,
         UNKNOWN = 0
     }
-    public class Matrix<T> : ICopiable<Matrix<T>>, IZeroable<Matrix<T>>, IIdentityable<Matrix<T>> where T: IZeroable<T>, IIdentityable<T>
+
+    public enum ParticularStatus
+    {
+        ZERO = 0,
+        IDENTITY = 1,
+        NONE = 2
+    }
+    public class Matrix<T> : ICopiable<Matrix<T>>, IZeroable<Matrix<T>>, IIdentityable<Matrix<T>> where T: IZeroable<T>, IIdentityable<T>, ICopiable<T>, new()
     {
         private T[,] _dataMatrix;
         private int _numberOfRows;
@@ -135,22 +142,62 @@ namespace Math
 
         public static Matrix<T> Inverse(Matrix<T> original)
         {
-            
+            throw new NotImplementedException();
         }
 
         public Matrix<T> GetZero()
         {
-            throw new NotImplementedException();
+            return new (GetZeroMatrix());
         }
 
         public bool IsZero()
         {
-            throw new NotImplementedException();
+            int i = 0;
+            int j = 0;
+            for (; i < _numberOfRows && _dataMatrix[i, j].IsZero(); i++)
+            {
+                for (; j < _numberOfRows && _dataMatrix[i, j].IsZero(); j++)
+                {
+                }
+            }
+
+            return i == _numberOfRows && i == _numberOfColumns;
+        }
+
+        private T[,] GetZeroMatrix()
+        {
+            T[,] matrix = new T[_numberOfRows,_numberOfColumns];
+            T element = new T();
+            T zero = element.GetZero();
+            for (int i = 0; i < _numberOfRows; i++)
+            {
+                for (int j = 0; j < _numberOfRows; j++)
+                {
+                    matrix[i, j] = zero.SimpleDeepCopy();
+                }
+            }
+
+            return matrix;
         }
 
         public Matrix<T> GetIdentity()
         {
-            throw new NotImplementedException();
+            if (_numberOfColumns == _numberOfRows)
+            {
+                T[,] matrix = GetZeroMatrix();
+                T element = new T();
+                T identity = element.GetIdentity();
+                int i = 0;
+                for (; i < _numberOfRows; i++)
+                {
+                    matrix[i, i] = identity.SimpleDeepCopy();
+                }
+
+                return new(matrix);
+            }
+            else
+                throw new NotImplementedException("Error: expected the number of Columns and number of Rows to be equal but got different amounts:" +
+                                                  $"\n(numberOfRows: {_numberOfRows} != numberOfColumns: {_numberOfColumns})");
         }
 
         public bool IsIdentity()
