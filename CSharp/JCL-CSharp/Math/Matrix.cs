@@ -24,11 +24,22 @@ namespace Math
         private int _numberOfColumns;
         private InvertibleStatus _invertibleStatus;
 
-        public Matrix(int rows, int columns)
+        public Matrix(int rows, int columns, ParticularStatus particularStatus = ParticularStatus.NONE)
         {
+            if (rows <= 0)
+                throw new ArgumentException($"Expected a strictly greater than zero value for the number of rows but got {rows}");
+            if (columns <= 0)
+                throw new ArgumentException($"Expected a strictly greater than zero value for the number of columns but got {columns}");
             _numberOfRows = rows;
             _numberOfColumns = columns;
             _dataMatrix = new T[rows, columns];
+            if (particularStatus == ParticularStatus.ZERO)
+                _dataMatrix = GetZeroMatrix();
+            else if (particularStatus == ParticularStatus.IDENTITY)
+            {
+                Matrix<T> identityMatrix = GetIdentity();
+                _dataMatrix = identityMatrix.GetArrayCopy();
+            }
             UpdateInvertibleStatus();
         }
         
@@ -76,6 +87,24 @@ namespace Math
             return _dataMatrix;
         }
 
+        public T[,] GetArrayCopy()
+        {
+            int rows = _dataMatrix.GetLength(0);
+            int columns = _dataMatrix.GetLength(1);
+            _numberOfRows = rows;
+            _numberOfColumns = columns;
+            T[,] matrixCopy = new T[rows, columns];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    _dataMatrix[i, j] = _dataMatrix[i, j];
+                }
+            }
+
+            return matrixCopy;
+        }
+
         public static U[,] DeepCopyOfArray<U>(U[,] original)
         {
             int rows = original.GetLength(0);
@@ -98,6 +127,8 @@ namespace Math
         public int RowSize => _numberOfColumns;
         public int ColumnSize => _numberOfRows;
         public bool Invertible => IsInvertible();
+
+        public T[,] Data => _dataMatrix;
         
         private InvertibleStatus InvertibleStatus
         {
@@ -129,7 +160,34 @@ namespace Math
 
         public bool IsInvertible()
         {
-            throw new NotImplementedException();
+            bool isInvertible;
+            if (_invertibleStatus == InvertibleStatus.INVERTIBLE)
+                isInvertible = true;
+            else if (_invertibleStatus == InvertibleStatus.NON_INVERTIBLE)
+                isInvertible = false;
+            else
+            {
+                (bool isInvertibleBis, T[,] inverse) invertabilityCalculation = InvertibilityCalculation();
+                isInvertible = invertabilityCalculation.isInvertibleBis;
+            }
+            return isInvertible;
+        }
+
+        private (bool, T[,]) InvertibilityCalculation()
+        {
+            T topCorner = _dataMatrix[0, 0];
+            bool isInvertible = true;
+            T[,] inverseMatrix = GetArrayCopy();
+            if (topCorner.IsIdentity())
+            {
+                
+            }
+            else
+            {
+                T topCornerAdapter = topCorner.GetIdentityFactor();
+            }
+
+            return (isInvertible, inverseMatrix);
         }
 
         private void UpdateInvertibleStatus()
