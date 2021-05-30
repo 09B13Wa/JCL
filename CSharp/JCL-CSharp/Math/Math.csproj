@@ -9,9 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Math</RootNamespace>
     <AssemblyName>Math</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>9</LangVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -34,7 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Integer.cs" />
     <Compile Include="Math.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="Number.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -42,6 +45,10 @@
     <Folder Include="bin\Debug\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneralTools\GeneralTools.csproj">
+      <Project>{18a5f470-e9df-42b9-9ec0-c2656a7fd7c0}</Project>
+      <Name>GeneralTools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MainTest\MainTest.csproj">
       <Project>{7706957f-a8e3-427f-aaeb-27b511ce9663}</Project>
       <Name>MainTest</Name>

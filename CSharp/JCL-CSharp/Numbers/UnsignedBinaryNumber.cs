@@ -34,7 +34,7 @@ namespace Numbers
         
         public static List<int> toBinNumber(int integer){
             int listSize = MinimumLengthForRepresentation(integer);
-            int powerOfTwo = (int)Math.Pow(2, listSize - 1);
+            int powerOfTwo = Math.Math.PowerToInt(2, listSize - 1);
             List<int> newRepresentation = new List<int>();
             for (int i = 0; i < listSize; i++){
                 int valueToAdd = 0;

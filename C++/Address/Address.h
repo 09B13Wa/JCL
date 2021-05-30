@@ -4,9 +4,10 @@
 
 #ifndef C___ADDRESS_H
 #define C___ADDRESS_H
-
+#include "string"
 
 class Address {
+private:
 
 };
 
