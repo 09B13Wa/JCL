@@ -28,7 +28,7 @@ public class SignedBinaryNumber {
         else
             TotalLength = length;
         ValueLength = TotalLength - 1;
-        MaxValue = UnsignedBinaryNumber.MaxValueAbsoluteForLength(ValueLength);
+        MaxValue = UnsignedBinaryNumber.maxValueAbsoluteForLength(ValueLength);
         MinValue = -MaxValue - 1;
         SignBit = integers.get(0);
         Encoding = SignedBinaryEncoding.TWOS_COMPLEMENT_ENCODING;

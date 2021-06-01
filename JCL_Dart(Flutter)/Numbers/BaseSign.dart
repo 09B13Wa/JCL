@@ -1,0 +1,8 @@
+enum BaseSign{
+  POSITIVE,
+  NEGATIVE,
+  ZERO,
+  POSITIVE_ZERO,
+  NEGATIVE_ZERO,
+  NON_EXISTENT
+}
