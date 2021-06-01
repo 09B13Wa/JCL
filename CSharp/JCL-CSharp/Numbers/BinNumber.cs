@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Numbers
 {
-    public class BinNumber
+    public abstract class BinNumber
     {
         private List<uint> BinaryRepresentation;
         private int MinValue;
@@ -93,5 +93,7 @@ namespace Numbers
                 copy.Add(digit);
             return copy;
         }
+
+        public abstract int GetValue();
     }
 }

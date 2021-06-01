@@ -32,7 +32,7 @@ namespace Numbers
         }
 
         
-        public static List<int> toBinNumber(int integer){
+        public static List<int> ToBinNumber(int integer){
             int listSize = MinimumLengthForRepresentation(integer);
             int powerOfTwo = Math.Math.PowerToInt(2, listSize - 1);
             List<int> newRepresentation = new List<int>();
@@ -91,5 +91,9 @@ namespace Numbers
         }
 
 
+        public override int GetValue()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -366,7 +366,7 @@ namespace Numbers
 
             int integralPart = int.Parse(integralPartStr);
             int decimalPart = int.Parse(decimalPartStr);
-            List<int> integralBinary = UnsignedBinaryNumber.toBinNumber(integralPart);
+            List<int> integralBinary = UnsignedBinaryNumber.ToBinNumber(integralPart);
             List<int> decimalBinary = DecimalPartToBin(decimalPart);
             return (integralBinary, decimalBinary);
         }
