@@ -571,15 +571,186 @@ namespace Math
         public static void CheckForNull(object firstObject)
         {
             if (firstObject is null)
-                throw new NullReferenceException($"Error: {firstObject} can't be null for this operation but is null");
+                throw new NullReferenceException("Error: this object can't be null for this operation but is null");
         }
         
         public static void CheckForNull(object firstObject, object secondObject)
         {
             if (firstObject is null)
-                throw new NullReferenceException($"Error: {firstObject} can't be null for this operation but is null");
+                throw new NullReferenceException("Error: the first object can't be null for this operation but is null");
             if (secondObject is null)
-                throw new NullReferenceException($"Error: {secondObject} can't be null for this operation but is null");
+                throw new NullReferenceException("Error: the second object can't be null for this operation but is null");
+        }
+        public static Integer8 AddWithInteger8(Integer8 integer8Param, object secondObject)
+        {
+            sbyte addedValue;
+            sbyte value = integer8Param.Value;
+            if (secondObject is Integer8 integer8)
+                addedValue = (sbyte) (integer8.Value +  value);
+            else if (secondObject is UInteger8 uInteger8)
+                addedValue = (sbyte) (uInteger8.Value + value);
+            else if (secondObject is Integer16 integer16)
+                addedValue = (sbyte) (integer16.Value + value);
+            else if (secondObject is UInteger16 uInteger16)
+                addedValue = (sbyte) (uInteger16.Value + value);
+            else if (secondObject is Integer32 integer32)
+                addedValue = (sbyte) (integer32.Value + value);
+            else if (secondObject is UInteger32 uInteger32)
+                addedValue = (sbyte) (uInteger32.Value + value);
+            else if (secondObject is Integer64 integer64)
+                addedValue = (sbyte) (integer64.Value + (long) value);
+            else if (secondObject is UInteger64 uInteger64)
+                addedValue = (sbyte) (uInteger64.Value + (ulong) value);
+            else if (secondObject is int integer)
+                addedValue = (sbyte) (integer + value);
+            else if (secondObject is uint uinteger)
+                addedValue = (sbyte) (uinteger + value);
+            else if (secondObject is Int16 integer16Struct)
+                addedValue = (sbyte) (integer16Struct + (int) value);
+            else if (secondObject is UInt16 uinteger16Struct)
+                addedValue = (sbyte) (uinteger16Struct + value);
+            else if (secondObject is Int64 integer64Struct)
+                addedValue = (sbyte) (integer64Struct + (long) value);
+            else if (secondObject is UInt64 uinteger64Struct)
+                addedValue = (sbyte) (uinteger64Struct + (ulong) value);
+            else if (secondObject is float floatingPoint)
+                addedValue = (sbyte) (floatingPoint + value);
+            else if (secondObject is double doubleFloatingPoint)
+                addedValue = (sbyte) (doubleFloatingPoint + value);
+            else if (secondObject is decimal decimalFloatingPoint)
+                addedValue = (sbyte) (decimalFloatingPoint + value);
+            else
+                throw new ArithmeticException($"Error: unsupported type for adding to Integer 8");
+            return new Integer8(addedValue);
+            
+        }
+        public static UInteger8 AddWithInteger8(UInteger8 uInteger8Param, object secondObject)
+        {
+            byte addedValue;
+            byte value = uInteger8Param.Value;
+            if (secondObject is Integer8 integer8)
+                addedValue = (byte) (integer8.Value +  value);
+            else if (secondObject is UInteger8 uInteger8)
+                addedValue = (byte) (uInteger8.Value + value);
+            else if (secondObject is Integer16 integer16)
+                addedValue = (byte) (integer16.Value + value);
+            else if (secondObject is UInteger16 uInteger16)
+                addedValue = (byte) (uInteger16.Value + value);
+            else if (secondObject is Integer32 integer32)
+                addedValue = (byte) (integer32.Value + value);
+            else if (secondObject is UInteger32 uInteger32)
+                addedValue = (byte) (uInteger32.Value + value);
+            else if (secondObject is Integer64 integer64)
+                addedValue = (byte) (integer64.Value + (long) value);
+            else if (secondObject is UInteger64 uInteger64)
+                addedValue = (byte) (uInteger64.Value + (ulong) value);
+            else if (secondObject is int integer)
+                addedValue = (byte) (integer + value);
+            else if (secondObject is uint uinteger)
+                addedValue = (byte) (uinteger + value);
+            else if (secondObject is Int16 integer16Struct)
+                addedValue = (byte) (integer16Struct + (int) value);
+            else if (secondObject is UInt16 uinteger16Struct)
+                addedValue = (byte) (uinteger16Struct + value);
+            else if (secondObject is Int64 integer64Struct)
+                addedValue = (byte) (integer64Struct + (long) value);
+            else if (secondObject is UInt64 uinteger64Struct)
+                addedValue = (byte) (uinteger64Struct + (ulong) value);
+            else if (secondObject is float floatingPoint)
+                addedValue = (byte) (floatingPoint + value);
+            else if (secondObject is double doubleFloatingPoint)
+                addedValue = (byte) (doubleFloatingPoint + value);
+            else if (secondObject is decimal decimalFloatingPoint)
+                addedValue = (byte) (decimalFloatingPoint + value);
+            else
+                throw new ArithmeticException($"Error: unsupported type for adding to Integer 8");
+            return new UInteger8(addedValue);
+        }
+        
+        public static Integer16 AddWithInteger16(Integer16 integer16Param, object secondObject)
+        {
+            short addedValue;
+            short value = integer16Param.Value;
+            if (secondObject is Integer8 integer8)
+                addedValue = (short) (integer8.Value +  value);
+            else if (secondObject is UInteger8 uInteger8)
+                addedValue = (short) (uInteger8.Value + value);
+            else if (secondObject is Integer16 integer16)
+                addedValue = (short) (integer16.Value + value);
+            else if (secondObject is UInteger16 uInteger16)
+                addedValue = (short) (uInteger16.Value + value);
+            else if (secondObject is Integer32 integer32)
+                addedValue = (short) (integer32.Value + value);
+            else if (secondObject is UInteger32 uInteger32)
+                addedValue = (short) (uInteger32.Value + value);
+            else if (secondObject is Integer64 integer64)
+                addedValue = (short) (integer64.Value + (long) value);
+            else if (secondObject is UInteger64 uInteger64)
+                addedValue = (short) (uInteger64.Value + (ulong) value);
+            else if (secondObject is int integer)
+                addedValue = (short) (integer + value);
+            else if (secondObject is uint uinteger)
+                addedValue = (short) (uinteger + value);
+            else if (secondObject is Int16 integer16Struct)
+                addedValue = (short) (integer16Struct + (int) value);
+            else if (secondObject is UInt16 uinteger16Struct)
+                addedValue = (short) (uinteger16Struct + value);
+            else if (secondObject is Int64 integer64Struct)
+                addedValue = (short) (integer64Struct + (long) value);
+            else if (secondObject is UInt64 uinteger64Struct)
+                addedValue = (short) (uinteger64Struct + (ulong) value);
+            else if (secondObject is float floatingPoint)
+                addedValue = (short) (floatingPoint + value);
+            else if (secondObject is double doubleFloatingPoint)
+                addedValue = (short) (doubleFloatingPoint + value);
+            else if (secondObject is decimal decimalFloatingPoint)
+                addedValue = (short) (decimalFloatingPoint + value);
+            else
+                throw new ArithmeticException($"Error: unsupported type for adding to Integer 8");
+            return new Integer16(addedValue);
+        }
+        
+        public static UInteger16 AddWithUInteger16(UInteger16 uInteger16Param, object secondObject)
+        {
+            ushort addedValue;
+            ushort value = uInteger16Param.Value;
+            if (secondObject is Integer8 integer8)
+                addedValue = (ushort) (integer8.Value +  value);
+            else if (secondObject is UInteger8 uInteger8)
+                addedValue = (ushort) (uInteger8.Value + value);
+            else if (secondObject is Integer16 integer16)
+                addedValue = (ushort) (integer16.Value + value);
+            else if (secondObject is UInteger16 uInteger16)
+                addedValue = (ushort) (uInteger16.Value + value);
+            else if (secondObject is Integer32 integer32)
+                addedValue = (ushort) (integer32.Value + value);
+            else if (secondObject is UInteger32 uInteger32)
+                addedValue = (ushort) (uInteger32.Value + value);
+            else if (secondObject is Integer64 integer64)
+                addedValue = (ushort) (integer64.Value + (long) value);
+            else if (secondObject is UInteger64 uInteger64)
+                addedValue = (ushort) (uInteger64.Value + (ulong) value);
+            else if (secondObject is int integer)
+                addedValue = (ushort) (integer + value);
+            else if (secondObject is uint uinteger)
+                addedValue = (ushort) (uinteger + value);
+            else if (secondObject is Int16 integer16Struct)
+                addedValue = (ushort) (integer16Struct + (int) value);
+            else if (secondObject is UInt16 uinteger16Struct)
+                addedValue = (ushort) (uinteger16Struct + value);
+            else if (secondObject is Int64 integer64Struct)
+                addedValue = (ushort) (integer64Struct + (long) value);
+            else if (secondObject is UInt64 uinteger64Struct)
+                addedValue = (ushort) (uinteger64Struct + (ulong) value);
+            else if (secondObject is float floatingPoint)
+                addedValue = (ushort) (floatingPoint + value);
+            else if (secondObject is double doubleFloatingPoint)
+                addedValue = (ushort) (doubleFloatingPoint + value);
+            else if (secondObject is decimal decimalFloatingPoint)
+                addedValue = (ushort) (decimalFloatingPoint + value);
+            else
+                throw new ArithmeticException($"Error: unsupported type for adding to Integer 8");
+            return new UInteger16(addedValue);
         }
     }
     public class Integer32 : ICopiable<Integer32>, IZeroable<Integer32>, IIdentityable<Integer32>
@@ -692,12 +863,12 @@ namespace Math
             return IntegerTools.CompareWithInteger32(this, obj);
         }
 
-        public static bool operator ==(Integer32 firstInt, Integer32 secondInt)
+        public static bool operator ==(Integer32 firstInt, object secondInt)
         {
             return IntegerTools.CompareWithInteger32(firstInt, secondInt);
         }
 
-        public static bool operator !=(Integer32 firstInt, Integer32 secondInt)
+        public static bool operator !=(Integer32 firstInt, object secondInt)
         {
             return !(firstInt == secondInt);
         }
@@ -705,8 +876,21 @@ namespace Math
         public static Integer32 operator +(Integer32 firstInt)
         {
             IntegerTools.CheckForNull(firstInt);
-            return firstInt;
+            return new Integer32(firstInt.Value);
         }
+        
+        public static Integer32 operator +(Integer32 firstInt, Integer32 secondInt)
+        {
+            IntegerTools.CheckForNull(firstInt);
+            return new Integer32(firstInt.Value + secondInt.Value);
+        }
+        
+        public static Integer32 operator +(Integer16 firstInt, Integer32 secondInt)
+        {
+            IntegerTools.CheckForNull(firstInt);
+            return new Integer32(firstInt.Value + secondInt.Value);
+        }
+        
     }
     
     public class Integer64: ICopiable<Integer64>, IZeroable<Integer64>, IIdentityable<Integer64>

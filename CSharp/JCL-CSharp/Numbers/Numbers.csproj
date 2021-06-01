@@ -37,6 +37,7 @@
     <Compile Include="BaseSign.cs" />
     <Compile Include="BinNumber.cs" />
     <Compile Include="FloatingPointNumber.cs" />
+    <Compile Include="Fraction.cs" />
     <Compile Include="Integer.cs" />
     <Compile Include="NumbersException.cs" />
     <Compile Include="INumerable.cs" />
