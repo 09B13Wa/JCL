@@ -1,8 +1,3 @@
-
-class Base:
-    pass
-
-
 class BasedInt:
 
     def __init__(self, value: int, base: Base):
