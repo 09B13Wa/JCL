@@ -39,8 +39,13 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="IAddable.cs" />
         <Compile Include="ICopiable.cs" />
+        <Compile Include="IDecompasable.cs" />
+        <Compile Include="IDividable.cs" />
         <Compile Include="IIdentityable.cs" />
+        <Compile Include="IMultipliable.cs" />
+        <Compile Include="ISubstractable.cs" />
         <Compile Include="IZeroable.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

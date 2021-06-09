@@ -34,9 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Fraction.cs" />
     <Compile Include="Integer.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Matrix.cs" />
+    <Compile Include="MatrixBasic.cs" />
     <Compile Include="Number.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
