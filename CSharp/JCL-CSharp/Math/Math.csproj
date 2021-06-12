@@ -36,8 +36,15 @@
   <ItemGroup>
     <Compile Include="Fraction.cs" />
     <Compile Include="Integers\Integer.cs" />
+    <Compile Include="Integers\Integer16.cs" />
+    <Compile Include="Integers\Integer32.cs" />
+    <Compile Include="Integers\Integer64.cs" />
+    <Compile Include="Integers\Integer8.cs" />
     <Compile Include="Integers\IntegerTools.cs" />
-    <Compile Include="Integers\Uinteger8.cs" />
+    <Compile Include="Integers\UInteger16.cs" />
+    <Compile Include="Integers\UInteger32.cs" />
+    <Compile Include="Integers\UInteger64.cs" />
+    <Compile Include="Integers\UInteger8.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="MatrixBasic.cs" />
