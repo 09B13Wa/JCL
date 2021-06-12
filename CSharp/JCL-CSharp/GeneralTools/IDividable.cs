@@ -2,9 +2,9 @@ namespace GeneralTools
 {
     public interface IDividable<T>
     {
-        public void Divide(T element);
+        public void DivideInstance(T element);
 
-        public T Divide(T firstElement, T secondElement);
+        public T DivideInstance(T firstElement, T secondElement);
 
     }
 }

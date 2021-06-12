@@ -4,8 +4,8 @@ namespace GeneralTools
 {
     public interface IDecompasable<T>
     {
-        public List<T> Decompose();
+        public List<T> DecomposeInstance();
 
-        public List<T> Decompose(T element);
+        public List<T> DecomposeInstance(T element);
     }
 }

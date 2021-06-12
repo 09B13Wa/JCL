@@ -2,8 +2,8 @@ namespace GeneralTools
 {
     public interface IAddable<T>
     {
-        public void Add(T element);
+        public void AddInstance(T element);
 
-        public T Add(T firstElement, T secondElement);
+        public T AddInstance(T firstElement, T secondElement);
     }
 }

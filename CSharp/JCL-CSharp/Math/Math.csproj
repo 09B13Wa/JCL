@@ -35,25 +35,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Fraction.cs" />
-    <Compile Include="Integer.cs" />
+    <Compile Include="Integers\Integer.cs" />
+    <Compile Include="Integers\IntegerTools.cs" />
+    <Compile Include="Integers\Uinteger8.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="MatrixBasic.cs" />
     <Compile Include="Number.cs" />
-    <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\" />
+    <Folder Include="obj\Debug" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeneralTools\GeneralTools.csproj">
       <Project>{18a5f470-e9df-42b9-9ec0-c2656a7fd7c0}</Project>
       <Name>GeneralTools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MainTest\MainTest.csproj">
-      <Project>{7706957f-a8e3-427f-aaeb-27b511ce9663}</Project>
-      <Name>MainTest</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using GeneralTools;
 
 namespace Math
 {
-    public class Fraction<T> : ICopiable<Fraction<T>>, IIdentityable<Fraction<T>>, IZeroable<Fraction<T>>, IAddable<Fraction<T>>, 
-        ISubstractable<Fraction<T>>, IMultipliable<Fraction<T>>, IDividable<Fraction<T>> where T : IIdentityable<T>, 
-        IZeroable<T>, ICopiable<T>, IAddable<T>, ISubstractable<T>, IMultipliable<T>, IDividable<T>, IDecompasable<T>, new()
+    public class Fraction<T> : ICopiable<Fraction<T>>, IIdentityable<Fraction<T>>, IZeroable<Fraction<T>>,
+        IAddable<Fraction<T>>,
+        ISubstractable<Fraction<T>>, IMultipliable<Fraction<T>>, IDividable<Fraction<T>>, IDecompasable<T> where T : IIdentityable<T>,
+        IZeroable<T>, ICopiable<T>, IAddable<T>, ISubstractable<T>, IMultipliable<T>, IDividable<T>, IDecompasable<T>,
+        IEquatable<T>, new()
     {
         private T _numerator;
         private T _denominator;
@@ -13,10 +16,8 @@ namespace Math
         public Fraction(T numerator, T denominator)
         {
             _numerator = numerator;
-            if (!_denominator.IsZero())
-                _denominator = denominator;
-            else
-                throw new ArithmeticException($"Error: expected non - zero denominator but got {denominator}");
+            CheckForZero(denominator);
+            _denominator = denominator;
         }
 
         public Fraction(T numerator)
@@ -33,9 +34,29 @@ namespace Math
         
         public static Fraction<T> Identity => new Fraction<T>(new T().GetIdentity(), new T().GetIdentity());
         public static Fraction<T> Zero => new Fraction<T>(new T().GetZero(), new T().GetIdentity());
+
+        public T Numerator { get => _numerator; private set => _numerator = value; }
+        public T Denominator 
+        { 
+            get => _denominator; 
+            private set
+            {
+                CheckForZero(value);
+                _denominator = value; 
+            } 
+        }
+
+        private void CheckForZero(T element)
+        {
+            if (element.IsZero())
+                throw new ArithmeticException($"Error: expected non - zero denominator but got {element}");
+        }
         
-        public T Numerator => _numerator;
-        public T Denominator => _denominator;
+        private static void CheckForZeroDenominator(T element)
+        {
+            if (element.IsZero())
+                throw new ArithmeticException($"Error: expected non - zero denominator but got {element}");
+        }
         
         public Fraction<T> ShallowCopy()
         {
@@ -76,43 +97,130 @@ namespace Math
         {
             return _numerator.IsZero();
         }
-
-        public void Add(Fraction<T> element)
+        
+        public void Simplify()
         {
             
         }
 
-        public Fraction<T> Add(Fraction<T> firstElement, Fraction<T> secondElement)
+        private static (T, T, T) ToSameDenominator(Fraction<T> firstElement, Fraction<T> secondElement)
         {
-            Fraction<T> denominator
+            T denominator;
+            T newFirstElement;
+            T newSecondElement;
+            if (!firstElement.Denominator.Equals(secondElement.Denominator))
+            {
+                denominator = firstElement.Denominator.MultiplyInstance(firstElement.Denominator, secondElement.Denominator);
+                newFirstElement = firstElement.Numerator.MultiplyInstance(firstElement.Numerator, secondElement.Denominator);
+                newSecondElement =
+                    secondElement.Numerator.MultiplyInstance(secondElement.Numerator, firstElement.Denominator);
+            }
+            else
+            {
+                denominator = firstElement.Denominator.SimpleDeepCopy();
+                newFirstElement = firstElement.Numerator;
+                newSecondElement = secondElement.Numerator;
+            }
+
+            return (denominator, newFirstElement, newSecondElement);
+        }
+        
+        public void AddInstance(Fraction<T> element)
+        {
+            (T denominator, T newFirstElement, T newSecondElement) = ToSameDenominator(this, element);
+            CheckForZeroDenominator(denominator);
+            _denominator = denominator;
+            _numerator = newFirstElement.AddInstance(newFirstElement, newSecondElement);
+        }
+        public Fraction<T> AddInstance(Fraction<T> firstElement, Fraction<T> secondElement)
+        {
+            return Add(firstElement, secondElement, false);
+        }
+        public static Fraction<T> Add(Fraction<T> firstElement, Fraction<T> secondElement, bool simplify=true)
+        {
+            (T denominator, T newFirstElement, T newSecondElement) = ToSameDenominator(firstElement, secondElement);
+            T numerator = newFirstElement.AddInstance(newFirstElement, newSecondElement);
+            CheckForZeroDenominator(denominator);
+            Fraction<T> addedFunction = new Fraction<T>(numerator, denominator);
+            if (simplify)
+                addedFunction.Simplify();
+            return addedFunction;
         }
 
-        public void Substract(Fraction<T> element)
+        public void SubstractInstance(Fraction<T> element)
+        {
+            (T denominator, T newFirstElement, T newSecondElement) = ToSameDenominator(this, element);
+            CheckForZero(denominator);
+            _denominator = denominator;
+            _numerator = newFirstElement.SubstractInstance(newFirstElement, newSecondElement);
+        }
+
+        public Fraction<T> SubstractInstance(Fraction<T> firstElement, Fraction<T> secondElement)
+        {
+            return Substract(firstElement, secondElement, false);
+        }
+
+        public static Fraction<T> Substract(Fraction<T> firstElement, Fraction<T> secondElement, bool simplify=true)
+        {
+            (T denominator, T newFirstElement, T newSecondElement) = ToSameDenominator(firstElement, secondElement);
+            CheckForZeroDenominator(denominator);
+            T numerator = newFirstElement.SubstractInstance(newFirstElement, newSecondElement);
+            Fraction<T> addedFunction = new Fraction<T>(numerator, denominator);
+            if (simplify)
+                addedFunction.Simplify();
+            return addedFunction;
+        }
+
+        public void MultiplyInstance(Fraction<T> element)
+        {
+            Numerator = Numerator.MultiplyInstance(element.Numerator, _numerator);
+            Denominator = Denominator.MultiplyInstance(element.Denominator, _denominator);
+        }
+
+        public Fraction<T> MultiplyInstance(Fraction<T> firstElement, Fraction<T> secondElement)
+        {
+            return Multiply(firstElement, secondElement);
+        }
+
+        public static Fraction<T> Multiply(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            T numerator = firstFraction.Numerator.MultiplyInstance(firstFraction.Numerator, secondFraction.Numerator);
+            T denominator = firstFraction.Denominator.MultiplyInstance(firstFraction.Denominator, secondFraction.Denominator);
+            CheckForZeroDenominator(denominator);
+            return new(numerator, denominator);
+        }
+
+        public void DivideInstance(Fraction<T> element)
+        {
+            
+        }
+
+        public Fraction<T> DivideInstance(Fraction<T> firstElement, Fraction<T> secondElement)
         {
             throw new NotImplementedException();
         }
 
-        public Fraction<T> Substract(Fraction<T> firstElement, Fraction<T> secondElement)
+        public static Fraction<T> Inverse(Fraction<T> fraction)
+        {
+            T numerator = fraction.Denominator;
+            T denominator = fraction.Numerator;
+            CheckForZeroDenominator(denominator);
+            return new (numerator, denominator);
+        }
+
+        public void Inverse()
+        {
+            T numerator = Numerator;
+            Numerator = Denominator;
+            Denominator = numerator;
+        }
+
+        public List<T> DecomposeInstance()
         {
             throw new NotImplementedException();
         }
 
-        public void Multiply(Fraction<T> element)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Fraction<T> Multiply(Fraction<T> firstElement, Fraction<T> secondElement)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Divide(Fraction<T> element)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Fraction<T> Divide(Fraction<T> firstElement, Fraction<T> secondElement)
+        public List<T> DecomposeInstance(T element)
         {
             throw new NotImplementedException();
         }

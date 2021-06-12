@@ -2,8 +2,8 @@ namespace GeneralTools
 {
     public interface ISubstractable<T>
     {
-        public void Substract(T element);
+        public void SubstractInstance(T element);
 
-        public T Substract(T firstElement, T secondElement);
+        public T SubstractInstance(T firstElement, T secondElement);
     }
 }

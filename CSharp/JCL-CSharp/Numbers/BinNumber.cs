@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using GeneralTools;
+using Math;
 
 namespace Numbers
 {
     public abstract class BinNumber
     {
-        private List<uint> BinaryRepresentation;
-        private int MinValue;
-        public int Minimum { get => MinValue; }
-        private int MaxValue;
-        public int Maximum { get => MaxValue; }
-        private int CurrentLength;
+        protected List<byte> _binaryRepresentation;
+        protected int _minValue;
+        public int Minimum => _minValue; 
+        protected int _maxValue;
+        public int Maximum  => _maxValue; 
+        protected int _currentLength;
+        public int Length => _currentLength;
 
         public static List<uint> OnesComplement(List<uint> representation)
         {
@@ -86,14 +89,25 @@ namespace Numbers
             return onesComplement;
         }
 
-        public List<uint> GetBinaryRepresentation()
+        public List<uint> GetBinaryRepresentationCopy()
         {
             List<uint> copy = new List<uint>();
-            foreach (uint digit in BinaryRepresentation)
+            foreach (uint digit in _binaryRepresentation)
                 copy.Add(digit);
             return copy;
         }
 
-        public abstract int GetValue();
+        protected List<T> GetBinaryRepresentation<T>()
+        {
+            List<T> result = new List<T>();
+            foreach (byte b in _binaryRepresentation)
+            {
+                
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public abstract T GetValue<T>();
     }
 }

@@ -1,21 +1,19 @@
 using System;
 using System.Collections.Generic;
+using GeneralTools;
+using Math;
 
 namespace Numbers
 {
-    public class UnsignedBinaryNumber : BinNumber
-    {
-        private List<int> BinaryRepresentation;
-        private int Length;
-        private int MaxValue;
-
+    public class UnsignedBinaryNumber : BinNumber, ICopiable<UnsignedBinaryNumber>
+    { 
         public UnsignedBinaryNumber(UnsignedBinaryNumber binaryNumber)
         {
-            Length = binaryNumber.Length;
-            MaxValue = binaryNumber.MaxValue;
-            BinaryRepresentation = new List<int>();
+            _currentLength = binaryNumber.Length;
+            _maxValue = binaryNumber.Maximum;
+            _binaryRepresentation = new List<byte>();
             for (int i = Length - 1; i >= 0; i--)
-                BinaryRepresentation.Add(binaryNumber.BinaryRepresentation[i]);
+                _binaryRepresentation.Add(binaryNumber._binaryRepresentation[i]);
         }
         public static int MinimumLengthForRepresentation(int value){
             int length = 0;
@@ -53,11 +51,11 @@ namespace Numbers
             int amountToShortenBy = 0;
             if (Length > 0){
                 int index = 0;
-                int digit = BinaryRepresentation[0];
+                int digit = _binaryRepresentation[0];
                 while (index < Length && digit == 0){
                     index += 1;
                     amountToShortenBy += 1;
-                    digit = BinaryRepresentation[digit];
+                    digit = _binaryRepresentation[digit];
                 }
             }
             ShortenBy(amountToShortenBy);
@@ -75,23 +73,38 @@ namespace Numbers
         }
         public void ShortenBy(int amount){
             if (amount <= Length){
-                List<int> newRepresentation = new List<int>();
+                List<byte> newRepresentation = new List<byte>();
                 int target = Length - amount;
                 int newLength = 0;
                 for (int i = target; i < Length; i++){
-                    newRepresentation.Add(BinaryRepresentation[i]);
+                    newRepresentation.Add(_binaryRepresentation[i]);
                     newLength += 1;
                 }
-                MaxValue = MaxValueAbsoluteForLength(newLength);
-                Length = newLength;
-                BinaryRepresentation = newRepresentation;
+                _maxValue = MaxValueAbsoluteForLength(newLength);
+                _currentLength = newLength;
+                _binaryRepresentation = newRepresentation;
             }
             else throw new ArgumentException("Error: the amount " + amount + " is to great for to shorten by for the" +
                                                     "\nunsigned binary number of length " + Length);
         }
 
 
-        public override int GetValue()
+        public int GetValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override T GetValue<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public UnsignedBinaryNumber ShallowCopy()
+        {
+            throw new NotImplementedException();
+        }
+
+        public UnsignedBinaryNumber SimpleDeepCopy()
         {
             throw new NotImplementedException();
         }

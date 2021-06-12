@@ -2,9 +2,9 @@ namespace GeneralTools
 {
     public interface IMultipliable<T>
     {
-        public void Multiply(T element);
+        public void MultiplyInstance(T element);
 
-        public T Multiply(T firstElement, T secondElement);
+        public T MultiplyInstance(T firstElement, T secondElement);
 
     }
 }
