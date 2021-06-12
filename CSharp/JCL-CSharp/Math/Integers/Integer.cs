@@ -4,16 +4,4 @@ using GeneralTools;
 namespace Math
 {
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
 }
