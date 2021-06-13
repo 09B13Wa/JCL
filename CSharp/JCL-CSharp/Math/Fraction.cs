@@ -334,11 +334,6 @@ namespace Math
             return element.DecomposeInstance();
         }
 
-        public static Fraction<T> operator +(Fraction<T> fraction)
-        {
-            return new (fraction.Numerator, fraction.Denominator);
-        }
-
         public void OppositeInstance()
         {
             Sign = Opposite(this).Sign;
@@ -366,16 +361,6 @@ namespace Math
             }
 
             return new Fraction<T>(fraction.Numerator, fraction.Denominator, oppositeSign);
-        }
-
-        public static Fraction<T> operator -(Fraction<T> fraction)
-        {
-            if (TIdentity is INegative<T>)
-            {
-                return Opposite(fraction);
-            }
-            else
-                throw new ArithmeticException("Error: cannot change signes as this type only supports positive values");
         }
 
         private string BuildStringOfCertainLength(char character, int length)
@@ -409,7 +394,7 @@ namespace Math
             return charCount;
         }
 
-        private string ToExtraFatFunction(int spacing = 3)
+        public string ToStringWithSize(int spacing = 3)
         {
             (string top, string middle, string bottom) text = (Numerator.ToString(), "", Denominator.ToString());
             (int top, int middle, int bottom) widths = (text.top.Length, 0, text.bottom.Length);
@@ -449,7 +434,6 @@ namespace Math
             text.middle = sign.text + text.middle;
             return text.top + text.middle + text.bottom;
         }
-
         public override bool Equals(object obj)
         {
             bool isEqual;
@@ -464,6 +448,29 @@ namespace Math
                 isEqual = false;
 
             return isEqual;
+        }
+
+        public override string ToString()
+        {
+            return ToStringWithSize();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+        public static Fraction<T> operator +(Fraction<T> fraction)
+        {
+            return new (fraction.Numerator, fraction.Denominator);
+        }
+        public static Fraction<T> operator -(Fraction<T> fraction)
+        {
+            if (TIdentity is INegative<T>)
+            {
+                return Opposite(fraction);
+            }
+            else
+                throw new ArithmeticException("Error: cannot change signes as this type only supports positive values");
         }
 
         public static Fraction<T> operator +(Fraction<T> firstFraction, Fraction<T> secondFraction)
