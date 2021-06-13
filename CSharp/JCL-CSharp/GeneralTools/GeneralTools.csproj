@@ -45,10 +45,12 @@
         <Compile Include="IDividable.cs" />
         <Compile Include="IIdentityable.cs" />
         <Compile Include="IMultipliable.cs" />
+        <Compile Include="INegative.cs" />
         <Compile Include="ISubstractable.cs" />
         <Compile Include="IZeroable.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Sign.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
