@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GeneralTools;
 
 namespace Math
@@ -9,7 +8,7 @@ namespace Math
         IAddable<Fraction<T>>, INegative<Fraction<T>>,
         ISubstractable<Fraction<T>>, IMultipliable<Fraction<T>>, IDividable<Fraction<T>>, IDecompasable<T> where T : IIdentityable<T>,
         IZeroable<T>, ICopiable<T>, IAddable<T>, ISubstractable<T>, IMultipliable<T>, IDividable<T>, IDecompasable<T>,
-        IEquatable<T>, new()
+        IEquatable<T>, IComparable, new()
     {
         private T _numerator;
         private T _denominator;
@@ -32,15 +31,15 @@ namespace Math
 
         public Fraction(Sign sign = Sign.POSITIVE)
         {
-            _numerator = TIdentity;
-            _denominator = TIdentity;
+            _numerator = TypeIdentity;
+            _denominator = TypeIdentity;
             _sign = sign;
         }
         
-        public static Fraction<T> Identity => new Fraction<T>(TIdentity, TIdentity);
-        public static Fraction<T> Zero => new Fraction<T>(TZero, TIdentity);
-        public static T TIdentity => new T().GetIdentity();
-        public static T TZero => new T().GetZero();
+        public static Fraction<T> Identity => new Fraction<T>(TypeIdentity, TypeIdentity);
+        public static Fraction<T> Zero => new Fraction<T>(TypeZero, TypeIdentity);
+        public static T TypeIdentity => new T().GetIdentity();
+        public static T TypeZero => new T().GetZero();
 
         public T Numerator { get => _numerator; private set => _numerator = value; }
         public T Denominator 
@@ -74,7 +73,7 @@ namespace Math
 
         public Fraction<T> SimpleDeepCopy()
         {
-            return new Fraction<T>(_numerator, _denominator);
+            return new (_numerator, _denominator);
         }
 
         public Fraction<T> DeepCopy()
@@ -112,8 +111,8 @@ namespace Math
             (List<T> numeratorToSimplify, List<T> denominatorToSimplify) = WithoutDuplicates(this);
             (int numberOfElementsNumerator, int numberOfElementsDenominator) =
                 (numeratorToSimplify.Count, denominatorToSimplify.Count);
-            T numerator = TIdentity;
-            T denominator = TIdentity;
+            T numerator = TypeIdentity;
+            T denominator = TypeIdentity;
             for (int numeratorIndex = 0; numeratorIndex < numberOfElementsNumerator; numeratorIndex++)
                 numerator.MultiplyInstance(numeratorToSimplify[numeratorIndex]);
             for (int denominatorIndex = 0; denominatorIndex < numberOfElementsDenominator; denominatorIndex++)
@@ -270,8 +269,9 @@ namespace Math
                     }
                 }
             }
-
-            (List<T> numerator, List<T> denominator) = (new List<T>(), new List<T>());
+            
+            List<T> numerator = new List<T>();
+            List<T> denominator = new List<T>();
             if (swaped)
             {
                 numerator = maximumNumberOfElementsList;
@@ -459,13 +459,14 @@ namespace Math
         {
             return base.GetHashCode();
         }
+
         public static Fraction<T> operator +(Fraction<T> fraction)
         {
             return new (fraction.Numerator, fraction.Denominator);
         }
         public static Fraction<T> operator -(Fraction<T> fraction)
         {
-            if (TIdentity is INegative<T>)
+            if (TypeIdentity is INegative<T>)
             {
                 return Opposite(fraction);
             }
@@ -518,6 +519,106 @@ namespace Math
         public static bool operator !=(Fraction<T> firstFraction, Fraction<T> secondFraction)
         {
             return !(firstFraction == secondFraction);
+        }
+
+        public static bool operator <(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            bool isInferior;
+            if (firstFraction is null || secondFraction is null)
+                isInferior = false;
+            else
+            {
+                (T _, T firstNumerator, T secondNumerator) = ToSameDenominator(firstFraction, secondFraction);
+                int offSetValue = firstNumerator.CompareTo(secondNumerator);
+                isInferior = offSetValue < 0;
+            }
+
+            return isInferior;
+        }
+
+        public static bool operator >(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            bool isInferior;
+            if (firstFraction is null || secondFraction is null)
+                isInferior = false;
+            else
+            {
+                (T _, T firstNumerator, T secondNumerator) = ToSameDenominator(firstFraction, secondFraction);
+                int offSetValue = firstNumerator.CompareTo(secondNumerator);
+                isInferior = offSetValue > 0;
+            }
+
+            return isInferior;
+        }
+
+        public static bool operator <=(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            bool isInferior;
+            if (firstFraction is null || secondFraction is null)
+                isInferior = false;
+            else
+            {
+                (T _, T firstNumerator, T secondNumerator) = ToSameDenominator(firstFraction, secondFraction);
+                int offSetValue = firstNumerator.CompareTo(secondNumerator);
+                isInferior = offSetValue <= 0;
+            }
+
+            return isInferior;
+        }
+
+        public static bool operator >=(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            bool isInferior;
+            if (firstFraction is null || secondFraction is null)
+                isInferior = false;
+            else
+            {
+                (T _, T firstNumerator, T secondNumerator) = ToSameDenominator(firstFraction, secondFraction);
+                int offSetValue = firstNumerator.CompareTo(secondNumerator);
+                isInferior = offSetValue >= 0;
+            }
+
+            return isInferior;
+        }
+
+        public static Fraction<T> operator %(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public static Fraction<T> operator |(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public static Fraction<T> operator &(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public static Fraction<T> operator ^(Fraction<T> firstFraction, Fraction<T> secondFraction)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public static Fraction<T> operator <<(Fraction<T> fraction, int offSet)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public static Fraction<T> operator >>(Fraction<T> firstFraction, int offSet)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public static Fraction<T> operator ++(Fraction<T> fraction)
+        {
+            return Add(fraction, new Fraction<T>());
+        }
+        
+        public static Fraction<T> operator --(Fraction<T> fraction)
+        {
+            return Substract(fraction, new Fraction<T>());
         }
     }
 }
