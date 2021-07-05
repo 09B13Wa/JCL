@@ -11,7 +11,7 @@
     <AssemblyName>Numbers</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>9</LangVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -37,12 +37,22 @@
     <Compile Include="BaseSign.cs" />
     <Compile Include="BinNumber.cs" />
     <Compile Include="FloatingPointNumber.cs" />
+    <Compile Include="Fraction.cs" />
     <Compile Include="Integer.cs" />
     <Compile Include="NumbersException.cs" />
+    <Compile Include="INumerable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnsignedBinaryNumber.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneralTools\GeneralTools.csproj">
+      <Project>{18a5f470-e9df-42b9-9ec0-c2656a7fd7c0}</Project>
+      <Name>GeneralTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MainTest\MainTest.csproj">
+      <Project>{7706957f-a8e3-427f-aaeb-27b511ce9663}</Project>
+      <Name>MainTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Math\Math.csproj">
       <Project>{16422d6e-1b8e-44c5-bcc9-0db9e01adb5a}</Project>
       <Name>Math</Name>

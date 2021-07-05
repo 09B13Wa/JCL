@@ -7,6 +7,9 @@ namespace Math
     {
         public static double Pi => 3.141592653589793;
         public static double E => 2.718281828459045;
+        
+        public static decimal PiDecimal => (decimal) 3.141592653589793;
+        public static decimal EDecimal => (decimal) 2.718281828459045;
 
         public static int PowerToInt(int x, int n)
         {
@@ -47,6 +50,107 @@ namespace Math
             }
 
             return power;
+        }
+
+        public static uint AbsoluteValue(uint value)
+        {
+            return value;
+        }
+        
+        public static int AbsoluteValue(int value)
+        {
+            int absoluteValue;
+            if (value < 0)
+                absoluteValue = value * -1;
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
+        
+        public static byte AbsoluteValue(byte value)
+        {
+            return value;
+        }
+        
+        public static sbyte AbsoluteValue(sbyte value)
+        {
+            sbyte absoluteValue;
+            sbyte minusOne = -1;
+            if (value < 0)
+                absoluteValue = (sbyte) (minusOne * value);
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
+
+        public static ushort AbsoluteValue(ushort value)
+        {
+            return value;
+        }
+        
+        public static short AbsoluteValue(short value)
+        {
+            short absoluteValue;
+            short minusOne = -1;
+            if (value < 0)
+                absoluteValue = (short) (minusOne * value);
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
+        
+        public static ulong AbsoluteValue(ulong value)
+        {
+            return value;
+        }
+        
+        public static long AbsoluteValue(long value)
+        {
+            long absoluteValue;
+            if (value < 0)
+                absoluteValue = value * -1;
+            else
+                absoluteValue = value;
+            return absoluteValue;
+        }
+
+        public static byte Abs(byte value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static sbyte Abs(sbyte value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static uint Abs(uint value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static int Abs(int value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static ulong Abs(ulong value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static long Abs(long value)
+        {
+            return AbsoluteValue(value);
+        }
+        public static ushort Abs(ushort value)
+        {
+            return AbsoluteValue(value);
+        }
+        
+        public static short Abs(short value)
+        {
+            return AbsoluteValue(value);
         }
     }
 }

@@ -12,5 +12,5 @@ public class BasedInt {
 
     public int getValue(){
         return 0;
-    }
+    } 
 }
