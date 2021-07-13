@@ -6,6 +6,7 @@ class Base:
     __base_characters: Dict[int, str]
     __number_of_symbols: int
 
+
     def __init__(self, dictionary: Dict[str, int]) -> Base:
         self.__base_values = dictionary
         self.__base_characters = {}

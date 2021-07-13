@@ -2,18 +2,20 @@
 
 import asyncio
 import time
+from threading import Thread
+
+boucle_allume: bool = True
+
+def example(limite, enieme):
+    global boucle
+    boucle.rai
+    i = 0
+    while i < limite:
+        print(str(i) + " iteration de la boucle n°" + enieme)
+        i += 1
 
 
-async def bis(age: int) -> int:
-    time.sleep(50)
-    return age
-
-
-def example(name: str, age: int) -> None:
-    time.sleep(100)
-    age = await bis(age)
-    print("Salut a " + name + " qui à " + str(age))
-
-
-if __name__ == 'main':
-    example("Jascha", 19)
+boucle = Thread(target=example, args=[20, "1"])
+boucle2 = Thread(target=example, args=[30, "2"])
+boucle.start()
+boucle2.start()
